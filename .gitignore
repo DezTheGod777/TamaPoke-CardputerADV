@@ -1,0 +1,5 @@
+.pio/
+.vscode/
+generated/pet.cpp
+include/pet.h
+include/dex.h
