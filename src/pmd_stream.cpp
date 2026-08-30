@@ -17,6 +17,8 @@ void PmdStream::unload() {
   _palCount = 0;
   _cachedAction = -1;
   _cachedFrame = -1;
+  _scaleRefW = 0;
+  _scaleRefH = 0;
   for (auto &a : _act) a = ActionMeta();
 }
 
@@ -142,6 +144,53 @@ bool PmdStream::load(uint16_t dex, bool shiny) {
     if (_act[id].present) computeBase(id);
   }
 
+  // Establish one stable scale reference from the VISIBLE pixels of IDLE,
+  // not from its full transparent canvas. We take the largest visible bounds
+  // across all IDLE frames so normal idle motion never changes scale.
+  if (_act[PMD_IDLE].present) {
+    const ActionMeta &idle = _act[PMD_IDLE];
+    uint8_t maxVisibleW = 0;
+    uint8_t maxVisibleH = 0;
+
+    for (uint8_t f = 0; f < idle.frames; ++f) {
+      if (!readFrame(PMD_IDLE, f)) continue;
+
+      int minX = idle.w, minY = idle.h, maxX = -1, maxY = -1;
+      for (uint8_t y = 0; y < idle.h; ++y) {
+        for (uint8_t x = 0; x < idle.w; ++x) {
+          uint8_t px = _frameBuf[(uint32_t)y * idle.w + x];
+          if (px == 0xFF || px >= _palCount) continue;
+          if ((int)x < minX) minX = x;
+          if ((int)x > maxX) maxX = x;
+          if ((int)y < minY) minY = y;
+          if ((int)y > maxY) maxY = y;
+        }
+      }
+
+      if (maxX >= minX && maxY >= minY) {
+        uint8_t vw = (uint8_t)(maxX - minX + 1);
+        uint8_t vh = (uint8_t)(maxY - minY + 1);
+        if (vw > maxVisibleW) maxVisibleW = vw;
+        if (vh > maxVisibleH) maxVisibleH = vh;
+      }
+    }
+
+    _scaleRefW = maxVisibleW ? maxVisibleW : idle.w;
+    _scaleRefH = maxVisibleH ? maxVisibleH : idle.h;
+  } else {
+    // Rare malformed/alternate sprite pack with no IDLE action.
+    for (uint8_t id = 0; id < PMD_NACTS; ++id) {
+      if (_act[id].present) {
+        _scaleRefW = _act[id].w;
+        _scaleRefH = _act[id].h;
+        break;
+      }
+    }
+  }
+
+  Serial.printf("PMD scale reference: visible IDLE %ux%u px\n",
+                (unsigned)_scaleRefW, (unsigned)_scaleRefH);
+
   _cachedAction = -1;
   _cachedFrame = -1;
 
@@ -226,18 +275,30 @@ void PmdStream::draw(M5Canvas &target, uint8_t requested, int16_t cx,
 
   int baseScale = forcedScale > 0 ? forcedScale : 0;
   if (baseScale <= 0) {
-    int scaleX = 118 / std::max<int>(1, m.w);
-    int scaleY = 72 / std::max<int>(1, m.h);
+    // Stable across every action, but based on the actual visible Pokemon
+    // instead of the transparent IDLE canvas. This preserves a useful size on
+    // the 240x135 Cardputer screen while preventing action-to-action shrinking.
+    const int refW = _scaleRefW ? _scaleRefW : m.w;
+    const int refH = _scaleRefH ? _scaleRefH : m.h;
+
+    // Target the visible Pokemon at roughly the same size users preferred in
+    // the earlier port: up to about 58 px tall before the home-screen 25%
+    // enlargement. Width gets a generous cap so wide Pokemon still fit.
+    int scaleX = 104 / std::max<int>(1, refW);
+    int scaleY = 58 / std::max<int>(1, refH);
     baseScale = std::min(scaleX, scaleY);
     if (baseScale < 1) baseScale = 1;
     if (baseScale > 3) baseScale = 3;
   }
 
-  // forcedScale == -1 is used only by the home habitat. It enlarges the
-  // normal integer pixel-art scale by 25% using nearest-neighbor integer
-  // boundaries. No bilinear filtering is used, so the Pokemon stays crisp.
-  const int scaleNum = (forcedScale == -1) ? baseScale * 5 : baseScale;
-  const int scaleDen = (forcedScale == -1) ? 4 : 1;
+  // forcedScale == -1 is used by the home habitat. It enlarges the stable
+  // visible-pixel-derived scale by about 33% using nearest-neighbor integer
+  // boundaries. No filtering is used, so the pixel art remains crisp.
+  // Home habitat uses a modest 4/3 boost. This is only about 6.7% larger
+  // than v0.8.4's 5/4 boost, so the Pokemon grows a little without taking
+  // over the whole 240x135 habitat area.
+  const int scaleNum = (forcedScale == -1) ? baseScale * 4 : baseScale;
+  const int scaleDen = (forcedScale == -1) ? 3 : 1;
   const int destW = ((int)m.w * scaleNum + scaleDen - 1) / scaleDen;
   const uint8_t base = m.base ? m.base : m.h;
   const int basePixels = ((int)base * scaleNum + scaleDen - 1) / scaleDen;

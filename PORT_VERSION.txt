@@ -1,3 +1,5 @@
-TamaPoke Cardputer ADV port v0.7
-Direct Pet-class SD persistence + automatic changed-state autosave
-Pinned upstream TamaPoke: fdb24a7d19564ee641c9a7dfc776f6bce11cd78b
+TamaPoke Cardputer ADV port v0.8.5.3
+Stable public firmware filename: TamaPoke-CardputerADV.bin
+GitHub updater removes old versioned *-MERGED.bin files from main
+GitHub Releases remain untouched
+Pet save format remains compatible with v0.7 /tamapoke_v7_a.bin and _b.bin

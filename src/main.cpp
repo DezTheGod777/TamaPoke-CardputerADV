@@ -7,6 +7,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <cstring>
+#include <cstddef>
 #include <cmath>
 
 #include "pet.h"
@@ -61,12 +62,176 @@ enum DialogKind : uint8_t {
 };
 
 static Screen screen = HOME;
+static bool dirty = true;  // redraw flag; declared early for display sleep helpers
 static uint8_t starterSel = 0;
 static uint8_t homeSel = 0;
+static bool showHomeHeader = true;  // Press number 1 to show/hide name + status panel
 static bool feedOpen = false;
 static uint8_t feedSel = 0;
 static uint8_t cardPage = 0;
 static uint8_t settingsSel = 0;
+
+// Cardputer ADV display preferences.
+// These are separate from the Pet save so firmware updates can preserve the
+// existing v0.7 pet journal while display behavior evolves independently.
+static const uint8_t DISPLAY_BRIGHTNESS_PCT[] = {10, 25, 50, 75, 100};
+static const uint16_t DISPLAY_TIMEOUT_SEC[] = {0, 30, 60, 120, 300};
+static const char *DISPLAY_TIMEOUT_LABEL[] = {"OFF", "30 SEC", "1 MIN", "2 MIN", "5 MIN"};
+static uint8_t displayBrightnessIdx = 2;  // default 50%
+static uint8_t displayTimeoutIdx = 0;     // default OFF for safe upgrades
+static bool displaySleeping = false;
+static uint32_t displayLastActivity = 0;
+static const char *DISPLAY_CFG_PATH = "/tamapoke_display.cfg";
+
+struct __attribute__((packed)) DisplayConfigFile {
+  uint32_t magic;
+  uint8_t version;
+  uint8_t brightnessIdx;
+  uint8_t timeoutIdx;
+  uint8_t reserved;
+  uint32_t crc;
+};
+
+static uint32_t displayCfgHash(const uint8_t *p, size_t n) {
+  uint32_t h = 2166136261UL;
+  for (size_t i = 0; i < n; ++i) {
+    h ^= p[i];
+    h *= 16777619UL;
+  }
+  return h;
+}
+
+static uint32_t displayCfgCrc(const DisplayConfigFile &c) {
+  return displayCfgHash(reinterpret_cast<const uint8_t*>(&c),
+                        offsetof(DisplayConfigFile, crc));
+}
+
+static uint8_t displayBrightnessRaw() {
+  uint16_t pct = DISPLAY_BRIGHTNESS_PCT[displayBrightnessIdx];
+  return (uint8_t)((pct * 255U + 50U) / 100U);
+}
+
+static void applyDisplayBrightness() {
+  if (!displaySleeping) {
+    M5Cardputer.Display.setBrightness(displayBrightnessRaw());
+  }
+}
+
+static void saveDisplayConfig() {
+  if (!sdReady) return;
+  DisplayConfigFile c{};
+  c.magic = 0x38444354UL; // "TCD8"
+  c.version = 1;
+  c.brightnessIdx = displayBrightnessIdx;
+  c.timeoutIdx = displayTimeoutIdx;
+  c.crc = displayCfgCrc(c);
+
+  SD.remove(DISPLAY_CFG_PATH);
+  File f = SD.open(DISPLAY_CFG_PATH, FILE_WRITE);
+  if (!f) {
+    Serial.println("DISPLAY: could not write config");
+    return;
+  }
+  size_t wrote = f.write(reinterpret_cast<const uint8_t*>(&c), sizeof(c));
+  f.flush();
+  f.close();
+  Serial.printf("DISPLAY: config %s (brightness=%u%% timeout=%s)\\n",
+                wrote == sizeof(c) ? "saved" : "write failed",
+                DISPLAY_BRIGHTNESS_PCT[displayBrightnessIdx],
+                DISPLAY_TIMEOUT_LABEL[displayTimeoutIdx]);
+}
+
+static void loadDisplayConfig() {
+  if (!sdReady) {
+    applyDisplayBrightness();
+    return;
+  }
+
+  File f = SD.open(DISPLAY_CFG_PATH, FILE_READ);
+  if (f && f.size() == sizeof(DisplayConfigFile)) {
+    DisplayConfigFile c{};
+    size_t got = f.read(reinterpret_cast<uint8_t*>(&c), sizeof(c));
+    f.close();
+    if (got == sizeof(c) &&
+        c.magic == 0x38444354UL &&
+        c.version == 1 &&
+        c.brightnessIdx < (sizeof(DISPLAY_BRIGHTNESS_PCT) / sizeof(DISPLAY_BRIGHTNESS_PCT[0])) &&
+        c.timeoutIdx < (sizeof(DISPLAY_TIMEOUT_SEC) / sizeof(DISPLAY_TIMEOUT_SEC[0])) &&
+        displayCfgCrc(c) == c.crc) {
+      displayBrightnessIdx = c.brightnessIdx;
+      displayTimeoutIdx = c.timeoutIdx;
+      Serial.printf("DISPLAY: loaded brightness=%u%% timeout=%s\\n",
+                    DISPLAY_BRIGHTNESS_PCT[displayBrightnessIdx],
+                    DISPLAY_TIMEOUT_LABEL[displayTimeoutIdx]);
+    }
+  } else if (f) {
+    f.close();
+  }
+
+  applyDisplayBrightness();
+}
+
+static void wakeDisplay() {
+  if (!displaySleeping) {
+    displayLastActivity = millis();
+    return;
+  }
+
+  // Cardputer ADV safety: do NOT issue the ST7789 hardware sleep command.
+  // Some units/library revisions can fail to wake the panel cleanly.
+  // We only restore the backlight, which is instant and reliable.
+  displaySleeping = false;
+  M5Cardputer.Display.setBrightness(displayBrightnessRaw());
+  displayLastActivity = millis();
+  dirty = true;
+  Serial.println("DISPLAY: backlight restored");
+}
+
+static void sleepDisplay() {
+  if (displaySleeping) return;
+
+  // Safe "screen off": backlight only. The LCD controller remains awake, so
+  // a keyboard press can always recover the display without a reboot.
+  M5Cardputer.Display.setBrightness(0);
+  displaySleeping = true;
+  Serial.println("DISPLAY: backlight off");
+}
+
+static void adjustBrightness(int delta) {
+  int n = (int)(sizeof(DISPLAY_BRIGHTNESS_PCT) / sizeof(DISPLAY_BRIGHTNESS_PCT[0]));
+  int next = (int)displayBrightnessIdx + delta;
+  if (next < 0) next = n - 1;
+  if (next >= n) next = 0;
+  displayBrightnessIdx = (uint8_t)next;
+  applyDisplayBrightness();
+  saveDisplayConfig();
+  dirty = true;
+}
+
+static void adjustDisplayTimeout(int delta) {
+  int n = (int)(sizeof(DISPLAY_TIMEOUT_SEC) / sizeof(DISPLAY_TIMEOUT_SEC[0]));
+  int next = (int)displayTimeoutIdx + delta;
+  if (next < 0) next = n - 1;
+  if (next >= n) next = 0;
+  displayTimeoutIdx = (uint8_t)next;
+  saveDisplayConfig();
+  displayLastActivity = millis();
+  dirty = true;
+}
+
+static void serviceDisplaySleep(uint32_t now) {
+  if (displaySleeping) return;
+  uint16_t secs = DISPLAY_TIMEOUT_SEC[displayTimeoutIdx];
+  if (!secs) return;
+
+  // Don't blank the display in the middle of an active timing-based minigame.
+  if (screen == PLAY || screen == TRAIN) return;
+
+  if (now - displayLastActivity >= (uint32_t)secs * 1000UL) {
+    sleepDisplay();
+  }
+}
+
 static int16_t dexCursor = 1;
 static bool dexGridDirty = true;
 
@@ -117,7 +282,6 @@ static float sackShake = 0;
 static bool trainNewHi = false;
 
 static uint32_t lastDraw = 0;
-static bool dirty = true;
 
 static const int16_t STARTERS[3] = {1, 4, 7};
 
@@ -751,7 +915,7 @@ static void drawHome(uint32_t now) {
   }
 
   drawBathFx(now);
-  drawHeaderText();
+  if (showHomeHeader) drawHeaderText();
   drawHomePanel();
   drawFeedOverlay();
   drawToast();
@@ -1019,30 +1183,48 @@ static void drawSettings() {
   ui.fillScreen(UI_CREAM);
   ui.setTextColor(UI_INK);
   ui.setTextSize(2);
-  ui.drawCentreString("SETTINGS", 120, 7, 1);
+  ui.drawCentreString("SETTINGS", 120, 4, 1);
 
-  const char *items[5] = {
+  char brightnessLabel[28];
+  snprintf(brightnessLabel, sizeof(brightnessLabel), "BRIGHTNESS: %u%%",
+           DISPLAY_BRIGHTNESS_PCT[displayBrightnessIdx]);
+
+  char timeoutLabel[30];
+  snprintf(timeoutLabel, sizeof(timeoutLabel), "SCREEN OFF: %s",
+           DISPLAY_TIMEOUT_LABEL[displayTimeoutIdx]);
+
+  const char *items[8] = {
     audioEnabled() ? "SOUND: ON" : "SOUND: OFF",
+    brightnessLabel,
+    timeoutLabel,
+    "SCREEN OFF NOW",
     "POKEDEX",
     "CONTROLS",
     "RELEASE POKEMON",
     "BACK"
   };
 
-  for (int i = 0; i < 5; ++i) {
-    int y = 30 + i * 19;
+  // Six visible rows; menu scrolls as the selection moves.
+  int top = 0;
+  if (settingsSel > 2) top = settingsSel - 2;
+  if (top > 2) top = 2;
+
+  for (int row = 0; row < 6; ++row) {
+    int i = top + row;
+    int y = 24 + row * 16;
     bool sel = i == settingsSel;
-    ui.fillRoundRect(38, y, 164, 15, 5, sel ? C565(0xff,0xeb,0xb8) : UI_WHITE);
-    ui.drawRoundRect(38, y, 164, 15, 5, sel ? UI_WARN : UI_TRACK);
+    ui.fillRoundRect(34, y, 172, 13, 4, sel ? C565(0xff,0xeb,0xb8) : UI_WHITE);
+    ui.drawRoundRect(34, y, 172, 13, 4, sel ? UI_WARN : UI_TRACK);
     ui.setTextSize(1);
-    ui.setTextColor(i == 3 ? UI_BAD : UI_INK);
-    ui.drawCentreString(items[i], 120, y + 5, 1);
+    ui.setTextColor(i == 6 ? UI_BAD : UI_INK);
+    ui.drawCentreString(items[i], 120, y + 4, 1);
   }
 
-  ui.setTextColor(C565(0x6d,0x6b,0x68));
   ui.setTextSize(1);
-  const bool ntp = strlen(TAMAPOKE_WIFI_SSID) > 0;
-  ui.drawCentreString(ntp ? "Clock: NTP at boot" : "Clock: runtime only", 120, 126, 1);
+  ui.setTextColor(C565(0x6d,0x6b,0x68));
+  if (top > 0) ui.drawString("^", 214, 25);
+  if (top < 2) ui.drawString("v", 214, 105);
+  ui.drawCentreString("LEFT/RIGHT ADJUST  ENTER SELECT", 120, 123, 1);
 }
 
 static void drawHelp() {
@@ -1060,9 +1242,10 @@ static void drawHelp() {
     "G: farewell/runaway",
     "N: rename       R: release",
     "ESC/BACKSPACE: back",
-    "Arrow keycaps also work without Fn"
+    "Any key restores screen",
+    "Arrow keycaps work without Fn"
   };
-  for (int i = 0; i < 9; ++i) ui.drawString(lines[i], 15, 27 + i * 11);
+  for (int i = 0; i < 10; ++i) ui.drawString(lines[i], 15, 24 + i * 10);
 }
 
 static void drawRename() {
@@ -1504,6 +1687,21 @@ static void onKeyboard() {
   bool backEdge = backNow && !prevBackspace;
   bool escEdge = escNow && !prevEsc;
 
+  bool anyKeyNow =
+      !st.word.empty() || !st.hid_keys.empty() || !st.modifier_keys.empty() ||
+      st.enter || st.space || backNow || escNow ||
+      upNow || downNow || leftNow || rightNow ||
+      st.tab || st.fn || st.shift || st.ctrl || st.opt || st.alt;
+
+  if (displaySleeping) {
+    if (anyKeyNow) wakeDisplay();
+    // The wake key is deliberately swallowed so waking the screen never
+    // accidentally feeds, releases, navigates, or changes a setting.
+    goto save_input_state;
+  }
+
+  if (anyKeyNow) displayLastActivity = millis();
+
   if (screen == RENAME) {
     handleRenameInput(chars, prevChars, backEdge, enterEdge, escEdge);
     goto save_input_state;
@@ -1526,6 +1724,12 @@ static void onKeyboard() {
       dirty = true;
     }
     goto printable_keys;
+  }
+
+  if (screen != RENAME && chars[(uint8_t)'1'] && !prevChars[(uint8_t)'1']) {
+    showHomeHeader = !showHomeHeader;
+    dirty = true;
+    Serial.printf("UI: home header %s\n", showHomeHeader ? "ON" : "OFF");
   }
 
   if (screen == HOME) {
@@ -1626,27 +1830,40 @@ static void onKeyboard() {
     }
   } else if (screen == SETTINGS) {
     if (upEdge) {
-      settingsSel = settingsSel == 0 ? 4 : settingsSel - 1;
+      settingsSel = settingsSel == 0 ? 7 : settingsSel - 1;
       dirty = true;
     }
     if (downEdge) {
-      settingsSel = (settingsSel + 1) % 5;
+      settingsSel = (settingsSel + 1) % 8;
       dirty = true;
     }
+
+    if (leftEdge || rightEdge) {
+      int delta = rightEdge ? 1 : -1;
+      if (settingsSel == 1) adjustBrightness(delta);
+      else if (settingsSel == 2) adjustDisplayTimeout(delta);
+    }
+
     if (enterEdge || spaceEdge) {
       if (settingsSel == 0) {
         audioSetEnabled(!audioEnabled());
         if (audioEnabled()) sfxPlay(SFX_TAP);
         dirty = true;
       } else if (settingsSel == 1) {
+        adjustBrightness(1);
+      } else if (settingsSel == 2) {
+        adjustDisplayTimeout(1);
+      } else if (settingsSel == 3) {
+        sleepDisplay();
+      } else if (settingsSel == 4) {
         dexCursor = pet.speciesId > 0 ? pet.speciesId : 1;
         screen = DEX_GRID;
         dexGridDirty = true;
         dirty = true;
-      } else if (settingsSel == 2) {
+      } else if (settingsSel == 5) {
         screen = HELP;
         dirty = true;
-      } else if (settingsSel == 3) {
+      } else if (settingsSel == 6) {
         if (!pet.isEgg()) openDialog(DLG_RELEASE);
       } else {
         screen = HOME;
@@ -1854,7 +2071,10 @@ void setup() {
   sdReady = SD.begin(SD_CS, SPI, 25000000);
   Serial.printf("SD: %s\n", sdReady ? "OK" : "not mounted");
 
-  // v0.6: Pet::begin() itself loads the direct microSD save before NVS/new-game logic.
+  loadDisplayConfig();
+  displayLastActivity = millis();
+
+  // Pet persistence remains compatible with the v0.7 two-slot save journal.
   pet.begin();
 
   uint32_t epoch = getNtpEpoch();
@@ -1876,6 +2096,7 @@ void loop() {
   pet.update(now);
   onKeyboard();
 
+  serviceDisplaySleep(now);
 
   updateBath(now);
   updatePlay(now);
@@ -1893,6 +2114,13 @@ void loop() {
     uint32_t steps = (now - lastClockTick) / 30000;
     lastClockTick += steps * 30000;
     pet.lastSeenEpoch += steps * 30;
+  }
+
+  // Pet logic/autosave keeps running while the backlight is off.
+  // Rendering is skipped until a key restores the display.
+  if (displaySleeping) {
+    delay(8);
+    return;
   }
 
   bool anim = screenAnimated();

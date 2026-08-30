@@ -60,6 +60,12 @@ private:
   int8_t _cachedAction = -1;
   int8_t _cachedFrame = -1;
 
+  // Visible-pixel bounds of the IDLE animation. PMD canvases often contain
+  // large transparent margins; using the canvas dimensions makes small
+  // Pokemon render far too small.
+  uint8_t _scaleRefW = 0;
+  uint8_t _scaleRefH = 0;
+
   int frameAt(uint8_t action, uint32_t nowMs) const;
   bool readFrame(uint8_t action, int frame);
   bool computeBase(uint8_t action);
