@@ -11,6 +11,7 @@ on:
       - "scripts/**"
       - "platformio.ini"
       - "partitions.csv"
+      - "PORT_VERSION.txt"
       - ".github/workflows/build-firmware.yml"
 
 permissions:
@@ -52,9 +53,9 @@ jobs:
         run: |
           mkdir -p firmware-output
           cp .pio/build/m5stack-cardputer-adv/firmware.bin firmware-output/firmware-app.bin
-          if [ -f TamaPoke-CardputerADV-v0.8.5.3-firmware.bin ]; then
-            cp TamaPoke-CardputerADV-v0.8.5.3-firmware.bin firmware-output/
-          fi
+          for f in TamaPoke-CardputerADV-v*-firmware.bin; do
+            [ -f "$f" ] && cp "$f" firmware-output/
+          done
           if [ -f TamaPoke-CardputerADV.bin ]; then
             cp TamaPoke-CardputerADV.bin firmware-output/
           fi
