@@ -13,6 +13,17 @@ on:
       - "partitions.csv"
       - "PORT_VERSION.txt"
       - ".github/workflows/build-firmware.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "include/**"
+      - "generated/**"
+      - "scripts/**"
+      - "platformio.ini"
+      - "partitions.csv"
+      - "PORT_VERSION.txt"
+      - ".github/workflows/build-firmware.yml"
 
 permissions:
   contents: read
