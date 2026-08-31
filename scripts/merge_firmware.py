@@ -6,7 +6,7 @@ import shutil
 APP_BIN = "$BUILD_DIR/${PROGNAME}.bin"
 PROJECT_DIR = env.subst("$PROJECT_DIR")
 MERGED_BIN = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV.bin")
-APP_COPY = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.8.5.3-firmware.bin")
+APP_COPY = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.9.0-beta1-firmware.bin")
 
 
 def merge_bin(source, target, env):
