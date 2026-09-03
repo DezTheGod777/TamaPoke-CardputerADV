@@ -5,5 +5,6 @@ G0 / BtnA toggles the backlight manually; Settings manual screen-off row removed
 Small battery meter, low-battery indication, save indicator, About/version screen
 30-second terrarium idle mode with any-key return and normal configured screen timeout preserved
 Recent-events screen, display-settings recovery, enhanced shiny effects and Gastly/Haunter/Gengar atmosphere
+GitHub README now includes the v0.8.5.4 promotional artwork
 Pet save format remains compatible with v0.7 /tamapoke_v7_a.bin and /tamapoke_v7_b.bin
 Stable merged firmware filename: TamaPoke-CardputerADV.bin
