@@ -12,6 +12,19 @@ on:
       - "platformio.ini"
       - "partitions.csv"
       - ".github/workflows/build-firmware.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "include/**"
+      - "generated/**"
+      - "scripts/**"
+      - "platformio.ini"
+      - "partitions.csv"
+      - ".github/workflows/build-firmware.yml"
+      - "README.md"
+      - "PORT_VERSION.txt"
+      - "docs/**"
 
 permissions:
   contents: read
@@ -52,8 +65,8 @@ jobs:
         run: |
           mkdir -p firmware-output
           cp .pio/build/m5stack-cardputer-adv/firmware.bin firmware-output/firmware-app.bin
-          if [ -f TamaPoke-CardputerADV-v0.8.5.3-firmware.bin ]; then
-            cp TamaPoke-CardputerADV-v0.8.5.3-firmware.bin firmware-output/
+          if [ -f TamaPoke-CardputerADV-v0.8.5.4-firmware.bin ]; then
+            cp TamaPoke-CardputerADV-v0.8.5.4-firmware.bin firmware-output/
           fi
           if [ -f TamaPoke-CardputerADV.bin ]; then
             cp TamaPoke-CardputerADV.bin firmware-output/
@@ -63,7 +76,7 @@ jobs:
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TamaPoke-CardputerADV-firmware
+          name: TamaPoke-CardputerADV-v0.8.5.4-firmware
           path: firmware-output/*
           if-no-files-found: error
           retention-days: 30
