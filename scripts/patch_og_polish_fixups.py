@@ -19,5 +19,16 @@ needle = "static void sampleBattery(bool force = false) {"
 if needle in text and "static bool sceneNight();\n\nstatic void sampleBattery" not in text:
     text = text.replace(needle, "static bool sceneNight();\n\n" + needle, 1)
 
+# Make hardware testing unambiguous. If this exact build is flashed, the user
+# will see this splash before TamaPoke starts. This prevents stale/cached BINs
+# from being mistaken for the release candidate.
+boot_needle = '''  ui.fillScreen(BLACK);\n  ui.pushSprite(0, 0);\n\n  randomSeed((uint32_t)micros());'''
+boot_repl = '''  ui.fillScreen(C565(0x13, 0x0d, 0x27));\n  ui.setTextColor(UI_WHITE);\n  ui.setTextSize(2);\n  ui.drawCentreString("TAMAPOKE ADV", 120, 31, 1);\n  ui.setTextSize(1);\n  ui.setTextColor(UI_WARN);\n  ui.drawCentreString("v0.8.5.4  POLISH RC2", 120, 62, 1);\n  ui.setTextColor(UI_PINK);\n  ui.drawCentreString("OG FIRMWARE TEST BUILD", 120, 80, 1);\n  ui.setTextColor(UI_WHITE);\n  ui.drawCentreString("G0 SCREEN TOGGLE + BATTERY HUD", 120, 99, 1);\n  ui.pushSprite(0, 0);\n  delay(1400);\n\n  randomSeed((uint32_t)micros());'''
+if "POLISH RC2" not in text:
+    if boot_needle not in text:
+        print("[v0.8.5.4] ERROR: could not locate setup boot canvas block")
+        env.Exit(1)
+    text = text.replace(boot_needle, boot_repl, 1)
+
 main.write_text(text, encoding="utf-8", newline="\n")
-print("[v0.8.5.4] Applied compile-time forward-declaration fixups")
+print("[v0.8.5.4] Applied compile-time fixups + RC2 boot identifier")
