@@ -1,5 +1,6 @@
 name: Publish v0.8.5.4 RC4 prerelease
 
+# RC4 corrected classic-background/status-meter test build
 on:
   push:
     branches: [main]
