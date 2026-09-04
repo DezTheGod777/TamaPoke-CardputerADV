@@ -115,7 +115,10 @@ if old_tail not in text:
     fail("could not locate classic drawScene tail")
 text = text.replace(old_tail, new_tail, 1)
 
-# Update the unmistakable boot identifier for this test build.
+# Update the unmistakable boot identifier for this test build. The full-polish
+# pass currently writes FULL POLISH RC4, while older builds used POLISH RC4.
+# Handle both forms so there is no ambiguity on the physical Cardputer.
+text = text.replace("v0.8.5.4  FULL POLISH RC4", "v0.8.5.4  FULL POLISH RC5")
 text = text.replace("v0.8.5.4  POLISH RC4", "v0.8.5.4  POLISH RC5")
 
 MAIN.write_text(text, encoding="utf-8", newline="\n")
