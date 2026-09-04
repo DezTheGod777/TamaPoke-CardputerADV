@@ -6,7 +6,7 @@ import shutil
 APP_BIN = "$BUILD_DIR/${PROGNAME}.bin"
 PROJECT_DIR = env.subst("$PROJECT_DIR")
 MERGED_BIN = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV.bin")
-APP_COPY = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.9.0-beta1-firmware.bin")
+APP_COPY = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.8.5.4-firmware.bin")
 
 
 def merge_bin(source, target, env):
@@ -15,16 +15,16 @@ def merge_bin(source, target, env):
 
     flash_images = []
     for offset, image in env.get("FLASH_EXTRA_IMAGES", []):
-        flash_images += [str(offset), '"%s"' % env.subst(image)]
+        flash_images += [str(offset), '\"%s\"' % env.subst(image)]
 
-    flash_images += [env.subst("$ESP32_APP_OFFSET"), '"%s"' % env.subst(APP_BIN)]
+    flash_images += [env.subst("$ESP32_APP_OFFSET"), '\"%s\"' % env.subst(APP_BIN)]
 
     cmd = " ".join([
-        '"%s"' % env.subst("$PYTHONEXE"),
-        '"%s"' % env.subst("$OBJCOPY"),
+        '\"%s\"' % env.subst("$PYTHONEXE"),
+        '\"%s\"' % env.subst("$OBJCOPY"),
         "--chip", str(chip),
         "merge_bin",
-        "-o", '"%s"' % MERGED_BIN,
+        "-o", '\"%s\"' % MERGED_BIN,
     ] + flash_images)
 
     print("Creating single merged flash image...")

@@ -27,7 +27,7 @@
     <text x="70" y="412" font-size="24" font-weight="700" fill="#c9c9cf">M5STACK CARDPUTER ADV • 240×135 • PMD SPRITES</text>
   </g>
 
-  <g transform="translate(505 190) rotate(-5 505 310)" filter="url(#shadow)">
+  <g transform="translate(820 300) scale(0.70) rotate(-5 505 310)">
     <rect x="0" y="0" width="1000" height="610" rx="45" fill="url(#body)" stroke="#ff7d97" stroke-width="7"/>
     <rect x="42" y="52" width="455" height="245" rx="19" fill="#251e24" stroke="#2a1119" stroke-width="9"/>
     <rect x="61" y="70" width="417" height="207" rx="7" fill="#99d9ee"/>
