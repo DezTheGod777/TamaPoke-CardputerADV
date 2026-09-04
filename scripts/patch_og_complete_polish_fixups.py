@@ -14,6 +14,22 @@ idle_block = '''  } else {
 if idle_block in text:
     text = text.replace(idle_block, "  }", 1)
 
+# Keep the terrarium scene completely clean: the normal top-right battery HUD
+# remains everywhere else, but disappears while idleTerrarium is active.
+overlay_old = '''static void drawSystemOverlays(uint32_t now) {
+  drawBatteryMeter();
+  drawSaveIndicator(now);
+}'''
+overlay_new = '''static void drawSystemOverlays(uint32_t now) {
+  if (!idleTerrarium) drawBatteryMeter();
+  drawSaveIndicator(now);
+}'''
+if overlay_old in text:
+    text = text.replace(overlay_old, overlay_new, 1)
+elif overlay_new not in text:
+    print("[v0.8.5.4-complete] ERROR: could not locate system overlay function")
+    env.Exit(1)
+
 # Keep STL calls explicit where template syntax is used.
 text = text.replace("petX = min<int16_t>(petTargetX, petX + step);",
                     "petX = std::min<int16_t>(petTargetX, petX + step);")
@@ -33,4 +49,4 @@ text = text.replace('noteEvent(String("Bond reached ") + m);',
                     'noteEvent(String("Bond reached ") + String(m));')
 
 main.write_text(text, encoding="utf-8", newline="\n")
-print("[v0.8.5.4-complete] Removed idle label and applied compile-safe fixups")
+print("[v0.8.5.4-complete] Removed idle label, hid idle battery HUD, and applied compile-safe fixups")
