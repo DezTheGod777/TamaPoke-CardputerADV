@@ -1,43 +1,31 @@
-# TamaPoke Cardputer ADV — v0.8.5.4
+# TamaPoke Cardputer ADV
 
-![TamaPoke Cardputer ADV v0.8.5.4](docs/tamapoke-cardputer-adv-v0.8.5.4.jpg)
+![TamaPoke Cardputer ADV v0.8.5.4](docs/tamapoke-cardputer-adv-banner.svg)
 
-An unofficial **M5Stack Cardputer ADV** port of the TamaPoke virtual Pokémon pet engine. The project keeps the original TamaPoke pet/evolution logic and adapts the experience to the Cardputer ADV's 240×135 display, keyboard, speaker, battery monitor and microSD.
+An unofficial **M5Stack Cardputer ADV** port of TamaPoke, adapted for the Cardputer ADV's 240×135 display, keyboard, speaker, battery monitoring and microSD.
 
-> **Stable OG firmware line.** Cyber Den experiments are intentionally kept separate from this branch/version.
+> **Current development release:** v0.8.5.4 RC4. Cyber Den experiments remain separate from this OG virtual-pet firmware line.
 
-## v0.8.5.4 highlights
+## v0.8.5.4 RC4 highlights
 
-- Fixes the random black-screen bug caused by a stale loop timestamp racing a newer keyboard-activity timestamp.
-- Keeps automatic display timeout choices: **Off / 30 sec / 1 min / 2 min / 5 min**.
-- Removes `SCREEN OFF NOW` from Settings.
-- **G0 / BtnA** now toggles the display backlight on/off manually.
-- Any keyboard key still wakes a timed-out display without triggering an accidental game action.
-- Small **battery meter** in the upper-right corner with low-battery color warning.
-- Brief **SAVE** indicator after background persistence is flushed.
-- Visible firmware version plus a dedicated **About / Version** screen.
-- **Recent Events** page backed by `/tamapoke_events.log` on microSD.
-- **Reset Display** recovery option resets brightness to 50% and timeout to 2 minutes without touching pet progress.
-- **Terrarium idle mode** after 30 seconds on the Home screen: menus disappear and the Pokémon continues wandering/animating. Press any key to return. The normal configured screen timeout continues counting separately.
-- Expanded PMD personality actions including pose, nod, breathing, sit and hop when those frames are available.
-- Enhanced shiny sparkles in the Home screen and Pokédex detail view.
-- Special purple spectral atmosphere for **Gastly #092, Haunter #093 and Gengar #094**.
-- Existing evolution animation, habitats, bath effects, mini-games, pet cards, Pokédex and v0.7 save journal remain intact.
-
-## Core TamaPoke features
-
-- Bulbasaur / Charmander / Squirtle starter selection
-- Egg tapping and hatching
-- Hunger, joy, energy, hygiene, weight, bond and care mistakes
-- Berries and candy
-- Petting, sleep/wake and bathing
-- Play and strength-training mini-games
-- Evolution / farewell / runaway lifecycle
-- Medals, streaks and records
-- Gen-1 Pokédex with 151 Pokémon and shiny registration
-- PMD SpriteCollab/TamaPoke TPK2 animation streaming from microSD
-- Day/night scene treatment and biome backgrounds: meadow, beach, forest, volcano, mountain and snow
-- Low-memory frame streaming designed for the Cardputer ADV, which does not have the large PSRAM used by the original target hardware
+- Random black-screen timeout race fixed while preserving **Off / 30 sec / 1 min / 2 min / 5 min** timeout choices.
+- **G0 / BtnA** toggles the display backlight manually; the old `SCREEN OFF NOW` Settings item is removed.
+- Compact **battery meter** in the upper-right with low-battery warning during normal UI screens.
+- **Terrarium/idle mode stays completely clean**: no `IDLE` label, no battery icon and no SAVE overlay.
+- Restores the **classic pre-RC3 TamaPoke habitat/background renderer** instead of the experimental redesigned scenery.
+- Restores the original graphical **FOOD / JOY / ENE / HYG meters** instead of raw numeric boxes such as `FOOD 82` or `JOY 92`.
+- Brief **SAVE** indicator after background persistence is flushed during normal UI use.
+- Visible firmware version and dedicated **About / Version** screen with upstream/port credits, SD status, sprite status and battery details.
+- **Recent Events** history for level-ups, Pokédex discoveries, medals, records, care mistakes, bond milestones, renames and evolutions.
+- **Reset Display** recovery option that restores display preferences without deleting pet progress.
+- Terrarium idle mode after 30 seconds on Home: menus disappear while the Pokémon continues animating in the classic habitat. Any key returns to normal Home; the configured screen timeout continues separately.
+- Richer PMD personality behavior using idle, walk, pose, nod, breathing, sit, hop, hurt and attack animations when available.
+- Special spectral atmosphere for **Gastly #092, Haunter #093 and Gengar #094**.
+- More dramatic evolution presentation: silhouette transformation, accelerating flashes, reveal and evolved Pokémon presentation.
+- Improved Pokédex detail page with animated preview, current/raised status, type-theme, habitat, rarity, stats, evolution information and shiny treatment.
+- Enhanced shiny sparkle effects and visible shiny badge.
+- Existing starter selection, egg/hatching, feeding, bathing, petting, sleep, play/training mini-games, medals, streaks, farewell/runaway lifecycle and Gen-1 Pokédex remain intact.
+- Pet save journal remains compatible with v0.7 `/tamapoke_v7_a.bin` and `/tamapoke_v7_b.bin`.
 
 ## Controls
 
@@ -63,110 +51,57 @@ An unofficial **M5Stack Cardputer ADV** port of the TamaPoke virtual Pokémon pe
 | Esc / Backspace | Back |
 | **G0 / BtnA** | **Manual display on/off** |
 
-The Cardputer's printed arrow keycaps (`; , . /`) are also accepted directly without requiring Fn.
+The Cardputer's printed arrow keycaps (`; , . /`) are accepted directly without requiring Fn.
 
-## Battery display
+## Pokémon sprites on microSD
 
-v0.8.5.4 uses the Cardputer ADV power API to read battery percentage and voltage. The compact battery icon is drawn in the upper-right without taking over the HUD. Battery details are also shown on the About screen.
+The port does **not** bundle the Pokémon sprite pack. Generate the original TamaPoke/PMD files and put the `mons` directory at the root of a FAT32 microSD card:
 
-Cardputer/Cardputer-ADV hardware cannot reliably report charging state/current, so the firmware does not display a fake charging indicator.
+```text
+/mons/p001.bin
+...
+/mons/p151.bin
+/mons/ps001.bin
+...
+/mons/ps151.bin
+```
 
-## Display behavior
+Normal Pokémon use `pNNN.bin`; shiny Pokémon use `psNNN.bin` with normal-sprite fallback.
 
-Settings contains:
+## Persistence
 
-- Brightness: **10 / 25 / 50 / 75 / 100%**
-- Automatic screen off: **Off / 30 sec / 1 min / 2 min / 5 min**
-- Reset Display
-
-Display-off is **backlight only**; the ST7789 controller remains awake. Pet logic and persistence continue while the screen is dark.
-
-`RESET DISPLAY` only restores display preferences. It does **not** erase the Pokémon or Pokédex.
-
-## Save compatibility
-
-Pet persistence remains compatible with the v0.7 two-slot CRC-checked microSD journal:
+Pet progress uses the v0.7-compatible two-slot journal:
 
 ```text
 /tamapoke_v7_a.bin
 /tamapoke_v7_b.bin
 ```
 
-Display preferences are separate:
+Additional Cardputer ADV files:
 
 ```text
 /tamapoke_display.cfg
-```
-
-Recent event history is separate:
-
-```text
 /tamapoke_events.log
 ```
 
-Updating from v0.8.5.3 to v0.8.5.4 is not intended to reset the existing pet.
+Display recovery does not erase Pokémon progress.
 
-## Pokémon sprites on microSD
+## Building
 
-The port does **not** bundle the Pokémon sprite pack. Generate the original TamaPoke/PMD files and place the `mons` directory at the root of a FAT32 microSD card:
-
-```text
-/mon​s/p001.bin
-/mon​s/p002.bin
-...
-/mon​s/p151.bin
-/mon​s/ps001.bin
-...
-/mon​s/ps151.bin
-```
-
-Normal sprites use `/mons/pNNN.bin`; shiny sprites use `/mons/psNNN.bin` with normal-sprite fallback.
-
-### Cardputer ADV microSD pins
-
-- SCK: GPIO 40
-- MISO: GPIO 39
-- MOSI: GPIO 14
-- CS: GPIO 12
-- SPI: 25 MHz
-
-## Build with VS Code + PlatformIO
-
-1. Clone or download this repository.
-2. Open the repository folder in VS Code.
-3. Install the PlatformIO extension.
-4. Build environment `m5stack-cardputer-adv`.
-5. The pre-build scripts fetch the pinned upstream TamaPoke pet/dex core and apply the Cardputer ADV v0.8.5.4 integration.
-6. Flash with PlatformIO Upload or use the merged firmware artifact produced by GitHub Actions.
-
-The stable merged filename is always:
+The project uses PlatformIO and automatically fetches the pinned upstream TamaPoke pet/dex source during the build.
 
 ```text
-TamaPoke-CardputerADV.bin
+pio run -e m5stack-cardputer-adv
 ```
 
-A versioned application image is also generated as:
+GitHub Actions also builds the merged Cardputer ADV firmware image.
 
-```text
-TamaPoke-CardputerADV-v0.8.5.4-firmware.bin
-```
+## Credits
 
-## Clock / offline progression
+- Original TamaPoke: **socquique/TamaPoke**
+- Cardputer ADV port: **DezTheGod777**
+- Pokémon/PMD artwork remains subject to its respective owners and PMD SpriteCollab licensing; those sprite assets are not bundled with this repository.
 
-The original TamaPoke hardware has a dedicated RTC; Cardputer ADV does not provide the same RTC. If `TAMAPOKE_WIFI_SSID` is configured in `include/user_config.h`, the firmware briefly obtains NTP time at boot, syncs TamaPoke, then disables Wi-Fi. With Wi-Fi credentials left blank, runtime progression works while powered on, but fully powered-off elapsed time cannot be reconstructed reliably.
+## Development status
 
-## Source and credits
-
-Original **TamaPoke** by Quique Tortosa / socquique:
-
-https://github.com/socquique/TamaPoke
-
-This port pins the upstream game core to commit:
-
-```text
-fdb24a7d19564ee641c9a7dfc776f6bce11cd78b
-```
-
-The upstream source is MIT licensed; see `LICENSE-UPSTREAM`.
-
-Pokémon names/artwork and PMD SpriteCollab assets are not covered by that MIT license. This repository therefore does not bundle the Pokémon sprite pack.
+The OG v0.8.5.4 work is being hardware-tested before final promotion. Cyber Den experimentation is intentionally kept separate so it cannot destabilize the virtual-pet firmware.
