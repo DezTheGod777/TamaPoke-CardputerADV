@@ -19,6 +19,7 @@ jobs:
       - name: Rebuild showcase image
         shell: bash
         run: |
+          # The source collage is stored as text chunks so the exact binary can be reconstructed in CI.
           cat docs/.showcase_chunks/hq_*.txt > /tmp/showcase.b64
           base64 -d /tmp/showcase.b64 > docs/tamapoke-cardputer-adv-showcase.webp
           test "$(wc -c < docs/tamapoke-cardputer-adv-showcase.webp)" -eq 91482
