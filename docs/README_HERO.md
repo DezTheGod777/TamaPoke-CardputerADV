@@ -1,0 +1,1 @@
+The README hero is the full v0.8.5.4 feature collage shown in the project owner's supplied image. Keep that collage as the canonical project artwork.
