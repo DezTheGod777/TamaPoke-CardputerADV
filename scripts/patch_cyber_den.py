@@ -61,7 +61,7 @@ replace_once(
 
 replace_once(
     '''      } else if (settingsSel == 4) {\n        dexCursor = pet.speciesId > 0 ? pet.speciesId : 1;\n        screen = DEX_GRID;\n        dexGridDirty = true;\n        dirty = true;\n      } else if (settingsSel == 5) {\n        screen = HELP;\n        dirty = true;\n      } else if (settingsSel == 6) {\n        if (!pet.isEgg()) openDialog(DLG_RELEASE);\n      } else {\n        screen = HOME;\n        dirty = true;\n      }''',
-    '''      } else if (settingsSel == 4) {\n        cyberDenEnter();\n        screen = CYBER_DEN;\n        dirty = true;\n      } else if (settingsSel == 5) {\n        dexCursor = pet.speciesId > 0 ? pet.speciesId : 1;\n        screen = DEX_GRID;\n        dexGridDirty = true;\n        dirty = true;\n      } else if (settingsSel == 6) {\n        screen = HELP;\n        dirty = true;\n      } else if (settingsSel == 7) {\n        if (!pet.isEgg()) openDialog(DLG_RELEASE);\n      } else {\n        screen = HOME;\n        dirty = true;\n      }''',
+    '''      } else if (settingsSel == 4) {\n        cyberDenSetPet(pet.speciesId, pet.shiny, currentName());\n        cyberDenEnter();\n        screen = CYBER_DEN;\n        dirty = true;\n      } else if (settingsSel == 5) {\n        dexCursor = pet.speciesId > 0 ? pet.speciesId : 1;\n        screen = DEX_GRID;\n        dexGridDirty = true;\n        dirty = true;\n      } else if (settingsSel == 6) {\n        screen = HELP;\n        dirty = true;\n      } else if (settingsSel == 7) {\n        if (!pet.isEgg()) openDialog(DLG_RELEASE);\n      } else {\n        screen = HOME;\n        dirty = true;\n      }''',
     "settings actions",
 )
 
@@ -73,7 +73,7 @@ replace_once(
 
 replace_once(
     '''      } else if (c == 'i' && !pet.isEgg()) {\n        cardPage = 0;''',
-    '''      } else if (c == 'c') {\n        cyberDenEnter();\n        screen = CYBER_DEN;\n        dirty = true;\n      } else if (c == 'i' && !pet.isEgg()) {\n        cardPage = 0;''',
+    '''      } else if (c == 'c') {\n        cyberDenSetPet(pet.speciesId, pet.shiny, currentName());\n        cyberDenEnter();\n        screen = CYBER_DEN;\n        dirty = true;\n      } else if (c == 'i' && !pet.isEgg()) {\n        cardPage = 0;''',
     "home hotkey",
 )
 
@@ -91,7 +91,7 @@ replace_once(
 
 replace_once(
     '''  dexCursor = pet.speciesId > 0 ? pet.speciesId : 1;\n  dirty = true;''',
-    '''  cyberDenBegin(sdReady);\n  dexCursor = pet.speciesId > 0 ? pet.speciesId : 1;\n  dirty = true;''',
+    '''  cyberDenBegin(sdReady);\n  cyberDenSetPet(pet.speciesId, pet.shiny, currentName());\n  dexCursor = pet.speciesId > 0 ? pet.speciesId : 1;\n  dirty = true;''',
     "setup",
 )
 
@@ -102,4 +102,4 @@ replace_once(
 )
 
 main_path.write_text(text, encoding="utf-8")
-print("CYBER DEN: patched main.cpp for beta 0.9")
+print("CYBER DEN: patched main.cpp for final-candidate visual build")
