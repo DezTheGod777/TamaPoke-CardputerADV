@@ -3,7 +3,7 @@ name: Build Cardputer ADV Firmware
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, og-v0.8.5.4-rc]
     paths:
       - "src/**"
       - "include/**"
