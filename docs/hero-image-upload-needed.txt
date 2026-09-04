@@ -1,1 +1,0 @@
-Temporary marker: replace the README SVG hero with the full v0.8.5.4 feature collage image supplied in the project chat. Remove this marker after the binary image is committed.
