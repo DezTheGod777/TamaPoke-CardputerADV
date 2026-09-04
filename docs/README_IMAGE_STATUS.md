@@ -1,1 +1,0 @@
-Preferred hero artwork confirmed: use the full 1536×1024 v0.8.5.4 feature showcase collage supplied by the project owner. The simplified SVG banner is not the desired hero.
