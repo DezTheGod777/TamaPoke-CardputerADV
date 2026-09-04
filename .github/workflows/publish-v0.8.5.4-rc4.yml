@@ -20,12 +20,11 @@ jobs:
       RC_SHA: b2053de8ee7e017e94f27634b6a33d70b989f1e0
 
     steps:
-      - name: Stop if prerelease already exists
+      - name: Check existing prerelease
         shell: bash
         run: |
           if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
-            echo "$TAG already exists; nothing to do."
-            exit 0
+            echo "$TAG already exists; build will still run so the test BIN can be downloaded as an Actions artifact."
           fi
 
       - name: Checkout corrected RC4 source
@@ -62,7 +61,15 @@ jobs:
           sha256sum TamaPoke-CardputerADV.bin
           ls -lh TamaPoke-CardputerADV.bin
 
-      - name: Publish GitHub prerelease
+      - name: Upload RC4 test BIN artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TamaPoke-CardputerADV-v0.8.5.4-RC4-firmware
+          path: TamaPoke-CardputerADV.bin
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub prerelease if needed
         shell: bash
         run: |
           if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
