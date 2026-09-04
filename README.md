@@ -1,6 +1,6 @@
 # TamaPoke Cardputer ADV
 
-![TamaPoke Cardputer ADV v0.8.5.4](docs/tamapoke-cardputer-adv-v0.8.5.4-hq.jpg)
+![TamaPoke Cardputer ADV v0.8.5.4](docs/tamapoke-cardputer-adv-banner.svg)
 
 An unofficial **M5Stack Cardputer ADV** port of TamaPoke, adapted for the Cardputer ADV's 240×135 display, keyboard, speaker, battery monitoring and microSD.
 
