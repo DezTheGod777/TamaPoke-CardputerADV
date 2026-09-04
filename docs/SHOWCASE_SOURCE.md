@@ -1,1 +1,0 @@
-The preferred README hero is the user's full v0.8.5.4 feature-showcase collage (TamaPoke logo, Cardputer ADV, Pikachu, Gastly/Haunter/Gengar, and the full feature grid). Source artwork is maintained outside this text file and should be used verbatim when updating the binary hero image.
