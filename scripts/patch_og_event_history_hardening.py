@@ -17,17 +17,18 @@ if MARKER in text:
     Return()
 
 # sampleBattery() runs before noteEvent() is defined. Forward-declare noteEvent
-# so low-battery notifications can be written to the same persistent history.
-anchor = "static void pushEventMemory(const String &s);\n\nstatic void sampleBattery(bool force = false) {"
+# beside the existing event-memory declaration. Other polish passes may insert
+# declarations between this line and sampleBattery(), so do not depend on exact
+# surrounding whitespace/order.
+anchor = "static void pushEventMemory(const String &s);"
 if anchor not in text:
-    fail("could not locate battery/event forward declaration anchor")
-text = text.replace(
-    anchor,
-    "static void pushEventMemory(const String &s);\n"
-    "static void noteEvent(const String &s);\n\n"
-    "static void sampleBattery(bool force = false) {",
-    1,
-)
+    fail("could not locate pushEventMemory forward declaration")
+if "static void noteEvent(const String &s);" not in text:
+    text = text.replace(
+        anchor,
+        anchor + "\nstatic void noteEvent(const String &s);",
+        1,
+    )
 
 # Persist the low-battery event instead of keeping it RAM-only.
 old_low = '    pushEventMemory("Low battery");'
@@ -49,9 +50,8 @@ static void noteEvent(const String &s) {
   pushEventMemory(s);
   if (!sdReady) return;
 
-  // Keep the SD history bounded. Recent Events only displays six entries, so
-  // once the text log exceeds 4 KiB we compact it to the six newest events.
-  // This avoids an event file that grows forever over months of pet use.
+  // Keep the SD history bounded. Recent Events displays six entries, so once
+  // the text log exceeds 4 KiB compact it to the six newest events.
   size_t existing = 0;
   File probe = SD.open(EVENT_LOG_PATH, FILE_READ);
   if (probe) {
