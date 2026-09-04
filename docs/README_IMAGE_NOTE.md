@@ -1,0 +1,1 @@
+The repository hero image is the full TamaPoke Cardputer ADV feature showcase supplied for v0.8.5.4. Keep the full feature collage as the README hero artwork; do not replace it with a simplified banner.
