@@ -1,18 +1,19 @@
-TamaPoke Cardputer ADV v0.8.5.4
-Stable OG TamaPoke firmware line
+TamaPoke Cardputer ADV v0.8.5.4 RC4
+Stable OG TamaPoke firmware line release candidate
 Display timeout race fixed while preserving OFF/30s/1m/2m/5m choices
 G0 / BtnA toggles the backlight manually; Settings manual screen-off row removed
-Small top-right battery meter with low-battery indication and voltage fallback
+Small top-right battery meter with low-battery indication and voltage fallback during normal UI screens
+Terrarium idle mode is clean: no IDLE label, no battery HUD and no SAVE overlay
+Classic pre-RC3 TamaPoke habitat/background renderer restored exactly for normal Home/idle scenes
+Original graphical FOOD / JOY / ENE / HYG status meters restored; raw numeric need boxes removed
 Visible save indicator, About/version screen, SD/sprite-pack status and upstream/port credits
-30-second terrarium idle mode with no on-screen IDLE label; any-key return and normal screen timeout preserved
-Expanded home HUD shows food, joy, energy, hygiene, age, weight, bond and level at a glance
+30-second terrarium idle mode with any-key return and normal configured screen timeout preserved
 Richer PMD personality behavior uses idle, walk, hop, nod, pose, sit, breath, hurt and attack actions when available
-Expanded meadow, beach, forest, volcano, mountain and snow backgrounds with animated ambience
 Special Gastly/Haunter/Gengar spectral atmosphere preserved and enhanced shiny sparkle treatment
 Evolution presentation upgraded with silhouette swapping, accelerating flashes, sound and full-color evolved reveal
 Pokédex detail screen upgraded with animated preview, raised/current state, shiny badge, type/theme, habitat, rarity, base stats and evolution info
 Recent-events/history screen records evolution, level, medal, Pokédex, care-mistake, bond and record milestones
 Display-settings recovery resets display preferences without deleting the Pokemon save
-GitHub README includes promotional artwork
+GitHub README uses high-resolution promotional artwork
 Pet save format remains compatible with v0.7 /tamapoke_v7_a.bin and /tamapoke_v7_b.bin
 Stable merged firmware filename: TamaPoke-CardputerADV.bin
