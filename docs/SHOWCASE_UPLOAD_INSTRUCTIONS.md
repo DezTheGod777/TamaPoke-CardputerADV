@@ -1,1 +1,0 @@
-Use the full feature collage supplied for v0.8.5.4 as the README hero. This file is temporary documentation and may be removed once the binary hero is committed.
