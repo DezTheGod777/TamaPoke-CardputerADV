@@ -1,19 +1,14 @@
-TamaPoke Cardputer ADV v0.8.5.4
-Stable OG TamaPoke firmware line; release source based on RC5
-Display timeout race fixed while preserving OFF/30s/1m/2m/5m choices
-G0 / BtnA toggles the backlight manually; Settings manual screen-off row removed
-Small top-right battery meter with low-battery indication and voltage fallback during normal UI screens
-Terrarium idle mode is clean: no IDLE label, no battery HUD and no SAVE overlay
-Classic pre-RC3 TamaPoke habitat/background renderer restored exactly for normal Home/idle scenes
-Original graphical FOOD / JOY / ENE / HYG status meters restored; raw numeric need boxes removed
-Visible save indicator, About/version screen, SD/sprite-pack status and upstream/port credits
-30-second terrarium idle mode with any-key return and normal configured screen timeout preserved
-Richer PMD personality behavior uses idle, walk, hop, nod, pose, sit, breath, hurt and attack actions when available
-Special Gastly/Haunter/Gengar spectral atmosphere preserved and enhanced shiny sparkle treatment
-Evolution presentation upgraded with silhouette swapping, accelerating flashes, sound and full-color evolved reveal
-Pokédex detail screen upgraded with animated preview, raised/current state, shiny badge, type/theme, habitat, rarity, base stats and evolution info
-Recent-events/history screen records evolution, level, medal, Pokédex, care-mistake, bond and record milestones
-Display-settings recovery resets display preferences without deleting the Pokemon save
-GitHub README uses a repository-hosted SVG banner
+TamaPoke Cardputer ADV v0.9.0 Ultimate
+Active development branch: ultimate-v0.9.0
+Foundation milestone 1: permanent personality + live mood + personality-driven idle behavior
+Personalities: PLAYFUL, BOLD, GENTLE, CALM, CURIOUS, STUBBORN
+Moods: CONTENT, EXCITED, HUNGRY, SLEEPY, BORED, DIRTY, AFFECTIONATE, PROUD
+Personality is derived from each Pokemon's permanent hatch genes, so it survives evolution and restart naturally
+Home header now reports personality / mood during normal healthy play while urgent care messages still take priority
+Idle behavior is weighted by personality: movement range, activity choice, pace and rest frequency now differ by individual
+Bond affects how frequently the Pokemon checks in and affectionate behavior takes priority at high bond
+No looping audio ambience is added
+Existing visual habitat effects, stable Home HUD fixes, display controls, event history and clean terrarium mode remain intact
 Pet save format remains compatible with v0.7 /tamapoke_v7_a.bin and /tamapoke_v7_b.bin
-Stable merged firmware filename: TamaPoke-CardputerADV.bin
+Stable main remains v0.8.5.4 until Ultimate v0.9.0 is hardware-tested and intentionally promoted
+Ultimate merged firmware filename: TamaPoke-CardputerADV-v0.9.0-Ultimate.bin

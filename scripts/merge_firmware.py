@@ -5,8 +5,8 @@ import shutil
 
 APP_BIN = "$BUILD_DIR/${PROGNAME}.bin"
 PROJECT_DIR = env.subst("$PROJECT_DIR")
-MERGED_BIN = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV.bin")
-APP_COPY = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.8.5.4-firmware.bin")
+MERGED_BIN = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.9.0-Ultimate.bin")
+APP_COPY = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.9.0-Ultimate-firmware.bin")
 
 
 def merge_bin(source, target, env):
@@ -27,7 +27,7 @@ def merge_bin(source, target, env):
         "-o", '\"%s\"' % MERGED_BIN,
     ] + flash_images)
 
-    print("Creating single merged flash image...")
+    print("Creating single merged Ultimate v0.9.0 flash image...")
     result = env.Execute(cmd)
     if result != 0:
         print("WARNING: merged BIN creation failed; normal firmware.bin still exists.")
