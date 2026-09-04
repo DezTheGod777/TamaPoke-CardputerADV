@@ -1,13 +1,14 @@
 TamaPoke Cardputer ADV v0.9.0 Ultimate
 Active development branch: ultimate-v0.9.0
-Foundation milestone 1: permanent personality + live mood + personality-driven idle behavior
-Personalities: PLAYFUL, BOLD, GENTLE, CALM, CURIOUS, STUBBORN
-Moods: CONTENT, EXCITED, HUNGRY, SLEEPY, BORED, DIRTY, AFFECTIONATE, PROUD
-Personality is derived from each Pokemon's permanent hatch genes, so it survives evolution and restart naturally
-Home header now reports personality / mood during normal healthy play while urgent care messages still take priority
-Idle behavior is weighted by personality: movement range, activity choice, pace and rest frequency now differ by individual
-Bond affects how frequently the Pokemon checks in and affectionate behavior takes priority at high bond
-No looping audio ambience is added
+Milestone 1: permanent personality + live mood + personality-driven idle behavior
+Milestone 2: expanded living behavior, complete mood set, ten stable traits, species/time reactions and subtle trait-based care rates
+Traits: PLAYFUL, BOLD, GENTLE, CALM, CURIOUS, STUBBORN, LAZY, AFFECTIONATE, ENERGETIC, SHY
+Moods: CONTENT, EXCITED, BORED, SLEEPY, HUNGRY, LONELY, PROUD, ANNOYED, SICK, CURIOUS, AFFECTIONATE, DIRTY
+Traits are derived from values already present in the v0.7 pet journal, so they survive evolution/restart without changing save compatibility
+Home header reports trait / mood during normal healthy play; urgent care states use direct messages such as hungry, sick, lonely or annoyed
+Idle life now includes broader wandering, short dozes, sit/breathe/stretch-like pauses, morning/night reactions, center check-ins, biome reactions and selected species-specific behaviors
+Trait subtly influences live and offline need-decay rates without making any temperament overwhelmingly better or worse
+No looping background audio ambience/music is added
 Existing visual habitat effects, stable Home HUD fixes, display controls, event history and clean terrarium mode remain intact
 Pet save format remains compatible with v0.7 /tamapoke_v7_a.bin and /tamapoke_v7_b.bin
 Stable main remains v0.8.5.4 until Ultimate v0.9.0 is hardware-tested and intentionally promoted
