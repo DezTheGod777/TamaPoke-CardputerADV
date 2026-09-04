@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">TamaPoke for Cardputer ADV</title>
+  <desc id="desc">Crisp vector banner for the TamaPoke Cardputer ADV project</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c0d12"/>
+      <stop offset="1" stop-color="#191a20"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ef4f73"/>
+      <stop offset="1" stop-color="#b9274d"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity=".5"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" rx="28" fill="url(#bg)"/>
+  <circle cx="1380" cy="90" r="280" fill="#4d1730" opacity=".16"/>
+  <circle cx="1200" cy="760" r="360" fill="#1e4463" opacity=".11"/>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="65" y="155" font-size="118" font-weight="800" fill="#ee7891">TamaPoke</text>
+    <text x="67" y="250" font-size="76" font-weight="800" fill="#f4f4f6">for Cardputer ADV</text>
+    <text x="70" y="320" font-size="35" font-weight="600" fill="#9b9ba2">A Pokémon virtual pet port</text>
+    <rect x="70" y="360" width="315" height="5" rx="3" fill="#ee7891" opacity=".9"/>
+    <text x="70" y="412" font-size="24" font-weight="700" fill="#c9c9cf">M5STACK CARDPUTER ADV • 240×135 • PMD SPRITES</text>
+  </g>
+
+  <g transform="translate(505 190) rotate(-5 505 310)" filter="url(#shadow)">
+    <rect x="0" y="0" width="1000" height="610" rx="45" fill="url(#body)" stroke="#ff7d97" stroke-width="7"/>
+    <rect x="42" y="52" width="455" height="245" rx="19" fill="#251e24" stroke="#2a1119" stroke-width="9"/>
+    <rect x="61" y="70" width="417" height="207" rx="7" fill="#99d9ee"/>
+
+    <rect x="91" y="82" width="356" height="58" rx="16" fill="#fff6d8" stroke="#7d6b58" stroke-width="3"/>
+    <text x="269" y="107" text-anchor="middle" font-family="monospace" font-size="22" font-weight="700" fill="#2b2522">CHARMANDER  Lv.1</text>
+    <text x="269" y="132" text-anchor="middle" font-family="monospace" font-size="19" font-weight="700" fill="#2b2522">Happy</text>
+
+    <rect x="61" y="140" width="417" height="77" fill="#8fd2eb"/>
+    <path d="M61 206 L110 174 L144 198 L196 166 L246 201 L304 171 L352 198 L408 167 L478 205 L478 230 L61 230Z" fill="#5b544b"/>
+    <rect x="61" y="217" width="417" height="60" fill="#79614a"/>
+
+    <g transform="translate(270 174)">
+      <rect x="-16" y="-32" width="32" height="32" fill="#fa6b29"/>
+      <rect x="-28" y="-20" width="18" height="48" fill="#fa6b29"/>
+      <rect x="-12" y="8" width="32" height="36" fill="#fa6b29"/>
+      <rect x="10" y="24" width="20" height="14" fill="#fa6b29"/>
+      <rect x="-7" y="-23" width="6" height="7" fill="#111"/>
+      <rect x="8" y="-23" width="6" height="7" fill="#111"/>
+      <rect x="-18" y="37" width="12" height="12" fill="#f1ddaa"/>
+      <rect x="9" y="39" width="12" height="12" fill="#f1ddaa"/>
+      <path d="M29 29 C54 18 56 0 47 -10 C65 1 64 22 43 39Z" fill="#fa6b29"/>
+      <circle cx="47" cy="-7" r="11" fill="#ffdf48"/>
+      <circle cx="47" cy="-7" r="6" fill="#ff7c2a"/>
+    </g>
+
+    <rect x="74" y="232" width="392" height="37" rx="6" fill="#fff6d8"/>
+    <g font-family="monospace" font-size="16" font-weight="700" fill="#292421">
+      <text x="85" y="248">FOOD</text><text x="275" y="248">JOY</text>
+      <text x="85" y="264">ENE</text><text x="275" y="264">HYG</text>
+    </g>
+    <g fill="#43b063">
+      <rect x="132" y="239" width="42" height="7" rx="3"/><rect x="324" y="239" width="42" height="7" rx="3"/>
+      <rect x="132" y="255" width="34" height="7" rx="3"/><rect x="324" y="255" width="38" height="7" rx="3"/>
+    </g>
+
+    <g transform="translate(560 42)">
+      <rect x="0" y="0" width="365" height="220" rx="26" fill="#161315" stroke="#271519" stroke-width="8"/>
+      <rect x="145" y="38" width="75" height="105" rx="16" fill="#262126"/>
+      <rect x="254" y="18" width="58" height="58" rx="15" fill="#311226" stroke="#f188c4" stroke-width="6"/>
+      <circle cx="283" cy="47" r="10" fill="#8e467b"/>
+      <g fill="#2a2528">
+        <rect x="20" y="18" width="30" height="165" rx="8"/><rect x="60" y="18" width="30" height="165" rx="8"/>
+        <rect x="100" y="18" width="30" height="165" rx="8"/><rect x="235" y="92" width="30" height="91" rx="8"/>
+        <rect x="275" y="92" width="30" height="91" rx="8"/><rect x="315" y="92" width="30" height="91" rx="8"/>
+      </g>
+    </g>
+
+    <g font-family="Arial, Helvetica, sans-serif" font-weight="700">
+      <rect x="42" y="330" width="915" height="52" rx="12" fill="#f6d4cb"/>
+      <rect x="42" y="397" width="915" height="52" rx="12" fill="#f6d4cb"/>
+      <rect x="42" y="464" width="915" height="52" rx="12" fill="#f6d4cb"/>
+      <rect x="42" y="531" width="915" height="48" rx="12" fill="#f6d4cb"/>
+      <g fill="#262125" font-size="25" text-anchor="middle">
+        <text x="110" y="364">1</text><text x="185" y="364">2</text><text x="260" y="364">3</text><text x="335" y="364">4</text><text x="410" y="364">5</text><text x="485" y="364">6</text><text x="560" y="364">7</text><text x="635" y="364">8</text><text x="710" y="364">9</text><text x="785" y="364">0</text>
+        <text x="130" y="432">Q</text><text x="215" y="432">W</text><text x="300" y="432">E</text><text x="385" y="432">R</text><text x="470" y="432">T</text><text x="555" y="432">Y</text><text x="640" y="432">U</text><text x="725" y="432">I</text><text x="810" y="432">O</text><text x="895" y="432">P</text>
+        <text x="155" y="499">A</text><text x="245" y="499">S</text><text x="335" y="499">D</text><text x="425" y="499">F</text><text x="515" y="499">G</text><text x="605" y="499">H</text><text x="695" y="499">J</text><text x="785" y="499">K</text><text x="875" y="499">L</text>
+        <text x="200" y="565">Z</text><text x="300" y="565">X</text><text x="400" y="565">C</text><text x="500" y="565">V</text><text x="600" y="565">B</text><text x="700" y="565">N</text><text x="800" y="565">M</text>
+      </g>
+      <g fill="#201c20">
+        <rect x="65" y="339" width="57" height="32" rx="12"/><rect x="140" y="339" width="57" height="32" rx="12"/><rect x="215" y="339" width="57" height="32" rx="12"/><rect x="290" y="339" width="57" height="32" rx="12"/><rect x="365" y="339" width="57" height="32" rx="12"/><rect x="440" y="339" width="57" height="32" rx="12"/><rect x="515" y="339" width="57" height="32" rx="12"/><rect x="590" y="339" width="57" height="32" rx="12"/><rect x="665" y="339" width="57" height="32" rx="12"/><rect x="740" y="339" width="57" height="32" rx="12"/>
+        <rect x="88" y="406" width="57" height="32" rx="12"/><rect x="173" y="406" width="57" height="32" rx="12"/><rect x="258" y="406" width="57" height="32" rx="12"/><rect x="343" y="406" width="57" height="32" rx="12"/><rect x="428" y="406" width="57" height="32" rx="12"/><rect x="513" y="406" width="57" height="32" rx="12"/><rect x="598" y="406" width="57" height="32" rx="12"/><rect x="683" y="406" width="57" height="32" rx="12"/><rect x="768" y="406" width="57" height="32" rx="12"/><rect x="853" y="406" width="57" height="32" rx="12"/>
+        <rect x="112" y="473" width="57" height="32" rx="12"/><rect x="202" y="473" width="57" height="32" rx="12"/><rect x="292" y="473" width="57" height="32" rx="12"/><rect x="382" y="473" width="57" height="32" rx="12"/><rect x="472" y="473" width="57" height="32" rx="12"/><rect x="562" y="473" width="57" height="32" rx="12"/><rect x="652" y="473" width="57" height="32" rx="12"/><rect x="742" y="473" width="57" height="32" rx="12"/><rect x="832" y="473" width="57" height="32" rx="12"/>
+        <rect x="157" y="540" width="57" height="30" rx="12"/><rect x="257" y="540" width="57" height="30" rx="12"/><rect x="357" y="540" width="57" height="30" rx="12"/><rect x="457" y="540" width="57" height="30" rx="12"/><rect x="557" y="540" width="57" height="30" rx="12"/><rect x="657" y="540" width="57" height="30" rx="12"/><rect x="757" y="540" width="57" height="30" rx="12"/>
+      </g>
+    </g>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="70" y="760" width="360" height="70" rx="35" fill="#ee7891" opacity=".12" stroke="#ee7891" stroke-width="2"/>
+    <text x="250" y="803" text-anchor="middle" font-size="25" font-weight="700" fill="#f7dce3">TamaPoke Cardputer ADV</text>
+  </g>
+</svg>
