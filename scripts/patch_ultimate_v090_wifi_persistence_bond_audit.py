@@ -224,13 +224,17 @@ static bool wifiTimeLoadCredentials(String &ssid, String &password) {
 '''
 text = text[:helper_start] + new_helpers + text[radio_pos:]
 
-# Ensure a successful manual connection always reaches persistence before the
-# password buffer is cleared and before the radio is shut down.
+# Ensure the successful manual-connection path persists credentials before the
+# success-path password wipe. A failure branch also clears the buffer earlier,
+# so deliberately search for the first clear *after* the save call.
 connect_fn = extract_cpp_function(text, "static void wifiTimeConnectAndSync(", "Wi-Fi connect function")
-if "if (!useSaved) wifiTimeSaveCredentials(connectSsid, connectPass);" not in connect_fn:
+save_call = "if (!useSaved) wifiTimeSaveCredentials(connectSsid, connectPass);"
+save_pos = connect_fn.find(save_call)
+if save_pos < 0:
     fail("manual Wi-Fi persistence call missing from connect function")
-if connect_fn.find("wifiTimeSaveCredentials(connectSsid, connectPass)") > connect_fn.find("wifiTimeClearPassword();"):
-    fail("credentials are being cleared before persistence")
+success_clear_pos = connect_fn.find("wifiTimeClearPassword();", save_pos)
+if success_clear_pos < 0:
+    fail("success-path password clear missing after persistence")
 
 # Build-time proof that USE SAVED WI-FI has both storage paths available.
 for needle in [
