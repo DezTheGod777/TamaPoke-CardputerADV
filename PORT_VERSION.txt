@@ -1,19 +1,28 @@
-TamaPoke Cardputer ADV v0.9.0 Ultimate
-Active development branch: ultimate-v0.9.0
-Phase 1: real personality foundation
-Phase 2: complete mood system and temperament-driven care behavior
-Phase 3: much richer idle life and visible habitat/species reactions
-Traits: PLAYFUL, BOLD, GENTLE, CALM, CURIOUS, STUBBORN, LAZY, AFFECTIONATE, ENERGETIC, SHY
-Moods: CONTENT, EXCITED, BORED, SLEEPY, HUNGRY, LONELY, PROUD, ANNOYED, SICK, CURIOUS, AFFECTIONATE, DIRTY
-Traits are derived from values already present in the v0.7 pet journal, so they survive evolution/restart without changing save compatibility
-Home header reports trait / mood during normal healthy play; urgent care states use direct messages such as hungry, sick, lonely or annoyed
-Phase 3 idle life includes broader wandering, visible short dozes, sky-watching, stretch-like moments, sits/hops, morning/night reactions, habitat-condition reactions and occasional foreground check-ins
-Foreground check-ins briefly enlarge and center the Pokemon to make affectionate/curious approaches feel closer to the player
-Expanded species-family behaviors now cover starter families, common bird lines, Jigglypuff, Psyduck, Abra, Eevee/original evolutions, Ditto and legendary birds in addition to Phase 2 signature species
-Habitat reactions respond to the firmware's visible snow/leaves/shore/embers/night-sky conditions; they do not use live internet weather
-Trait subtly influences live and offline need-decay rates without making any temperament overwhelmingly better or worse
-No looping background audio ambience/music is added
-Existing visual habitat effects, stable Home HUD fixes, display controls, event history and clean terrarium mode remain intact
-Pet save format remains compatible with v0.7 /tamapoke_v7_a.bin and /tamapoke_v7_b.bin
-Stable main remains v0.8.5.4 until Ultimate v0.9.0 is hardware-tested and intentionally promoted
-Ultimate merged firmware filename: TamaPoke-CardputerADV-v0.9.0-Ultimate.bin
+TamaPoke Cardputer ADV v0.9.0
+Hardware status: APPROVED on physical M5Stack Cardputer ADV
+Public firmware filename: TamaPoke-CardputerADV-v0.9.0.bin
+
+Major v0.9.0 additions:
+- Persistent personality traits and live moods
+- Richer idle behavior and species/time/habitat reactions
+- Home customization with selectable Meadow, Beach, Forest, Volcano, Mountain, Snow, Starfield and Dream backgrounds
+- Inventory, Poke Shop and coin economy
+- Six additional minigames with persistent high scores
+- Daily Life rewards, greetings, care bonuses, visitors and anniversary tracking
+- Deeper Pokedex history and favorites
+- Three-slot Save Manager with integrity verification and staged restore
+- Event-only audio upgrade with cries, jingles and care/evolution sounds; no looping background music/ambience
+- Animation polish, shiny effects, evolution presentation and sleep effects
+- Clock / Calendar with 12-hour time, seconds, weekday, full date and original Gastly/Haunter/Gengar PMD sprites
+- Manual date/time editor and one-shot Wi-Fi/NTP time sync with saved-network support
+- Starfield and Dream are normal selectable backgrounds; the retired 151 border is not included
+- Mystery Gift / Mew Visitor / Ultra Shiny secret content remains optional
+
+Compatibility:
+- Pet save journal remains compatible with v0.7 /tamapoke_v7_a.bin and /tamapoke_v7_b.bin
+- Original time-based leveling remains intact: 1 real minute = 1 in-game minute, +1 level per real hour
+- Original evolution level/path requirements remain intact; care mistakes can delay evolution
+- Original sunrise/day/sunset/night thresholds remain intact
+- Existing v0.8.5.4 display, battery, event-history and clean terrarium behavior remains included
+
+Development history remains on branch ultimate-v0.9.0 until the release PR is explicitly merged.
