@@ -20,7 +20,8 @@ if "// ULTIMATE_V090_WIFI_PERSISTENCE_BOND_AUDIT" not in text:
 
 # Public v0.9.0 branding. Development script/function names intentionally stay
 # unchanged so the tested patch chain remains stable; only user-visible release
-# strings are normalized here.
+# strings are normalized here. The lowercase hidden word "ultimate" remains as
+# the intentional Mystery Gift easter egg.
 required = {
     'static constexpr const char *FIRMWARE_VERSION = "v0.9.0 ULTIMATE";':
         'static constexpr const char *FIRMWARE_VERSION = "v0.9.0";',
@@ -28,6 +29,10 @@ required = {
         'static constexpr const char *FIRMWARE_NAME = "TamaPoke Cardputer ADV";',
     'ui.drawCentreString("ULTIMATE HUB", 120, 3, 1);':
         'ui.drawCentreString("TAMAPOKE HUB", 120, 3, 1);',
+    '"v0.9.0  ULTIMATE"':
+        '"v0.9.0"',
+    '"ULTIMATE HARDWARE TEST"':
+        '"HARDWARE APPROVED"',
 }
 for old, new in required.items():
     if old not in text:
@@ -38,8 +43,18 @@ for old, new in required.items():
 text = text.replace('"H: Ultimate Hub   M: games"', '"H: TamaPoke Hub   M: games"')
 text = text.replace('"H: ULTIMATE HUB   M: games"', '"H: TAMAPOKE HUB   M: games"')
 
-# Do not alter the hidden printable word "ultimate". It remains an intentional
-# Mystery Gift easter egg, not public firmware branding.
+# Fail the release build if known development-only user-facing labels survive.
+for stale in [
+    '"v0.9.0 ULTIMATE"',
+    '"v0.9.0  ULTIMATE"',
+    '"TamaPoke Ultimate"',
+    '"ULTIMATE HUB"',
+    '"ULTIMATE HARDWARE TEST"',
+    '"GHOST CLOCK"',
+]:
+    if stale in text:
+        fail(f"stale public development branding survived: {stale}")
+
 text = text.replace("// ULTIMATE_V090_WIFI_PERSISTENCE_BOND_AUDIT",
                     "// ULTIMATE_V090_WIFI_PERSISTENCE_BOND_AUDIT\n" + MARKER, 1)
 MAIN.write_text(text, encoding="utf-8", newline="\n")
