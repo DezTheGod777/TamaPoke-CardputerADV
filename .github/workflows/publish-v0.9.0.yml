@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "RELEASE_NOTES_v0.9.0.md"
+      - "docs/RELEASE_NOTES_v0.9.0.md"
       - "scripts/**"
       - "src/**"
       - "include/**"
@@ -86,4 +86,4 @@ jobs:
             release-assets/SHA256SUMS.txt \
             --target "$GITHUB_SHA" \
             --title "TamaPoke Cardputer ADV v0.9.0" \
-            --notes-file RELEASE_NOTES_v0.9.0.md
+            --notes-file docs/RELEASE_NOTES_v0.9.0.md
