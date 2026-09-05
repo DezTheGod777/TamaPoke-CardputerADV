@@ -47,16 +47,18 @@ static void ultimateExpireIdleMoment(uint32_t now) {
 }
 static int8_t ultimateHomeSpriteScale(uint32_t now) {
   ultimateExpireIdleMoment(now);
+  if (idleTerrarium) return -1;
   return ultimateIdleMoment == UIM_APPROACH ? 3 : -1;
 }
 static int16_t ultimateHomeGroundY(uint32_t now) {
   ultimateExpireIdleMoment(now);
+  if (idleTerrarium) return 118;
   return ultimateIdleMoment == UIM_APPROACH ? 98 : 88;
 }
 
 static void drawUltimateIdleMomentFx(uint32_t now) {
   ultimateExpireIdleMoment(now);
-  if (ultimateIdleMoment == UIM_NONE || pet.isEgg() || pet.sleeping) return;
+  if (idleTerrarium || ultimateIdleMoment == UIM_NONE || pet.isEgg() || pet.sleeping) return;
   uint16_t ink = sceneNight() ? UI_INK_NIGHT : UI_INK;
   if (ultimateIdleMoment == UIM_SKYWATCH) {
     int sx = petX < 120 ? petX + 25 : petX - 25;
@@ -196,9 +198,12 @@ text = must_replace(text,
     "  if (random(100) < 22) {\n    petTargetX = random(2) ? 92 : 148;\n    UltimateIdleMoment beat = random(100) < 52 ? UIM_SKYWATCH : UIM_STRETCH;\n    ultimateSetIdleMoment(beat, now, 2100);\n    static const uint8_t sky[] = {PMD_POSE, PMD_BREATH};\n    ultimateFlair(now, sky, 2, 1500, 1200);\n    return;\n  }\n\n  UltimateTrait checkTrait = ultimateTrait();\n  if (random(100) < 9 && (pet.bond >= 65 || checkTrait == UT_CURIOUS || checkTrait == UT_AFFECTIONATE)) {\n    petTargetX = 120;\n    ultimateSetIdleMoment(UIM_APPROACH, now, 1800);\n    static const uint8_t hello[] = {PMD_NOD, PMD_POSE, PMD_BREATH};\n    ultimateFlair(now, hello, 3, 1000, 750);\n    return;\n  }",
     "sky/stretch and foreground check-in")
 
-# Home draw line may have different indentation after earlier stable patches, so
-# match the call itself instead of a whitespace-sensitive whole line.
-pat = re.compile(r"mon\.draw\(ui,\s*currentAction\(now\),\s*petX,\s*88,\s*now,\s*-1\);")
+# Earlier stable polish changes Home's ground line for clean terrarium mode.
+# Match either shape so Phase 3 remains robust and preserves clean terrarium.
+pat = re.compile(
+    r"mon\.draw\(ui,\s*currentAction\(now\),\s*petX,\s*"
+    r"(?:idleTerrarium\s*\?\s*118\s*:\s*88|88),\s*now,\s*-1\s*\);"
+)
 m = pat.search(text)
 if not m:
     fail("could not locate Home sprite draw")
