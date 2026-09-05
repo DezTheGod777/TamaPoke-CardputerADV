@@ -84,11 +84,15 @@ text = text.replace(key_anchor,
     "        cryPlay((uint16_t)pet.speciesId);\n"
     + key_anchor, 1)
 
-# Advance the non-blocking event melody sequencer every loop.
-text = rep(text,
-    "  uint32_t now = millis();\n\n  pet.update(now);",
-    "  uint32_t now = millis();\n  serviceUltimateEventAudio(now);\n\n  pet.update(now);",
-    "audio loop service")
+# Advance the non-blocking event melody sequencer every loop. Anchor on the
+# loop prologue itself so later gameplay services between now/pet.update do not
+# make this patch whitespace/order-sensitive.
+loop_anchor = "void loop() {\n  M5Cardputer.update();\n  uint32_t now = millis();"
+if loop_anchor not in text:
+    fail("audio loop service")
+text = text.replace(loop_anchor,
+    loop_anchor + "\n  serviceUltimateEventAudio(now);",
+    1)
 
 MAIN.write_text(text, encoding="utf-8", newline="\n")
 print("[v0.9.0-ultimate-p10] Added non-looping event jingles, sleep/wake cues, coin/daily/rare sounds and procedural species cries")
