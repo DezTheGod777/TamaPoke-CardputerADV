@@ -24,9 +24,13 @@ if MARKER in text:
 if "// ULTIMATE_V090_PHASE10_AUDIO_UPGRADE" not in text:
     fail("Phase 10 must run first")
 
-helpers = r'''
-
-// ULTIMATE_V090_PHASE11_ANIMATION_POLISH
+# Phase 11 state is used by functions introduced in earlier phases, so define
+# it before Phase 4/5 code rather than beside drawHome. The evolution helper is
+# implemented later, but needs a forward declaration before drawEvolution().
+early_anchor = "// ULTIMATE_V090_PHASE4_HOME_CUSTOMIZATION"
+if early_anchor not in text:
+    fail("Phase 4 marker")
+early = r'''// ULTIMATE_V090_PHASE11_ANIMATION_STATE
 static int ultimateRenderedScreen = -1;
 static uint32_t ultimateTransitionStart = 0;
 static uint32_t ultimateShinyEntranceUntil = 0;
@@ -35,7 +39,14 @@ static uint32_t ultimateSleepWakeFxUntil = 0;
 static bool ultimateSleepWakeToSleep = false;
 static int16_t ultimateVisualLastSpecies = -1;
 static bool ultimateVisualWasEgg = true;
+static void drawUltimateEvolutionPolish(uint32_t now, float t);
 
+'''
+text = text.replace(early_anchor, early + early_anchor, 1)
+
+helpers = r'''
+
+// ULTIMATE_V090_PHASE11_ANIMATION_POLISH
 static void initUltimateVisualState() {
   ultimateVisualWasEgg = pet.isEgg();
   ultimateVisualLastSpecies = pet.isEgg() ? -1 : pet.speciesId;
@@ -115,7 +126,7 @@ static void drawUltimateHomePolishFx(uint32_t now) {
       ui.drawFastHLine(x - 2, y, 5, UI_OK);
       ui.drawFastVLine(x, y - 2, 5, UI_OK);
     }
-  } else if (ultimateDetailedMood() == UDM_SICK) {
+  } else if (ultimateDeepMood() == UDM_SICK) {
     uint16_t c = ((now / 260) & 1) ? UI_BAD : C565(0xa9,0x56,0x63);
     ui.drawLine(5, 31, 5, 75, c);
     ui.drawLine(234, 31, 234, 75, c);
