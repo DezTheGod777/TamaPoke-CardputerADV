@@ -21,6 +21,12 @@ def replace_function(text, start_sig, next_sig, body, label):
     return text[:start] + body.rstrip() + "\n\n" + text[end:]
 
 
+def rep(text, old, new, label):
+    if old not in text:
+        fail(f"could not locate {label}")
+    return text.replace(old, new, 1)
+
+
 text = MAIN.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
 if MARKER in text:
     print("[v0.9.0-daily-together] fix already applied")
@@ -104,43 +110,17 @@ text = replace_function(text,
     new_check,
     "Daily Life service")
 
-new_draw = r'''static void drawUltimateDaily() {
-  ui.fillScreen(UI_CREAM);
-  ui.setTextColor(UI_INK); ui.setTextSize(2);
-  ui.drawCentreString("DAILY LIFE", 120, 4, 1);
-  ui.setTextSize(1);
-  uint32_t day = ultimateCalendarDay();
-  if (!day) {
-    ui.drawCentreString("Date & time not set", 120, 34, 1);
-    ui.drawCentreString("Settings > Set Date / Time", 120, 50, 1);
-    ui.drawCentreString("Wi-Fi sync is optional", 120, 66, 1);
-  } else {
-    char line[42];
-    snprintf(line, sizeof(line), "Care streak: %u   Best: %u", pet.streak, pet.bestStreak);
-    ui.drawCentreString(line, 120, 28, 1);
-    snprintf(line, sizeof(line), "Daily reward: CLAIMED");
-    ui.drawCentreString(line, 120, 43, 1);
-    snprintf(line, sizeof(line), "Today's event: %s", ultimateDailyEventName(ultimateLastDailyEvent));
-    ui.drawCentreString(line, 120, 58, 1);
-
-    // Display elapsed full days with the current Pokemon. Do not calculate this
-    // from a persisted calendar date, which can be poisoned by an old bad clock.
+# IMPORTANT: only replace the three lines that calculate/render Together. Later
+# phases insert many helper functions between drawUltimateDaily() and drawHome(),
+# so replacing that entire region would delete unrelated Ultimate features.
+old_together = '''    uint32_t days = ultimateAdoptionDay && day >= ultimateAdoptionDay ? day - ultimateAdoptionDay : 0;
+    snprintf(line, sizeof(line), "Together: %lu day%s", (unsigned long)days, days == 1 ? "" : "s");
+    ui.drawCentreString(line, 120, 73, 1);'''
+new_together = '''    // Actual elapsed lifetime of this Pokemon, not a potentially stale saved date.
     uint32_t days = pet.ageMinutes / 1440UL;
     snprintf(line, sizeof(line), "Together: %lu day%s", (unsigned long)days, days == 1 ? "" : "s");
-    ui.drawCentreString(line, 120, 73, 1);
-
-    snprintf(line, sizeof(line), "Care coins today: %u/5", ultimateCareCoinsToday);
-    ui.drawCentreString(line, 120, 88, 1);
-    ui.drawCentreString("Rare visitors can appear in daily events", 120, 104, 1);
-  }
-  ui.setTextColor(C565(0x6d,0x6b,0x68));
-  ui.drawCentreString("ESC / ENTER = HOME", 120, 123, 1);
-}'''
-text = replace_function(text,
-    "static void drawUltimateDaily() {",
-    "static void drawHome(uint32_t now) {",
-    new_draw,
-    "Daily Life screen")
+    ui.drawCentreString(line, 120, 73, 1);'''
+text = rep(text, old_together, new_together, "Together display calculation")
 
 # Marker beside the generated Daily Life code for build/audit proof.
 text = text.replace("// ULTIMATE_V090_THIRD_AUDIT",
