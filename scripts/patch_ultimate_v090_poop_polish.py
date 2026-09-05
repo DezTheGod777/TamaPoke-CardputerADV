@@ -35,7 +35,9 @@ new_poops = r'''// ULTIMATE_V090_POOP_POLISH
 // The upper tiers get a tiny idle sway, and an occasional soft stink puff keeps
 // it alive without making the Home screen busy.
 static void drawPoopIcon(int cx, int baseY, uint32_t now, uint8_t index) {
-  const uint16_t outline = sceneNight() ? UI_INK_NIGHT : UI_INK;
+  // Keep the poop silhouette consistently near-black. A final perimeter pass
+  // below closes every edge after the brown inner layers are drawn.
+  const uint16_t outline = C565(0x18,0x18,0x18);
   const uint16_t dark = C565(0x78,0x45,0x27);
   const uint16_t mid  = C565(0x9a,0x5b,0x31);
   const uint16_t light = C565(0xbd,0x78,0x3f);
@@ -64,6 +66,24 @@ static void drawPoopIcon(int cx, int baseY, uint32_t now, uint8_t index) {
   // Tiny highlights give the swirl some depth at Cardputer resolution.
   ui.fillRect(cx - 2 + sway, baseY - 12, 1, 2, hi);
   ui.fillRect(cx - 4, baseY - 3, 2, 1, mid);
+
+  // Final continuous perimeter pass. This deliberately redraws the outside
+  // contour after all fills so there are no missing/gapped outline pixels.
+  ui.drawLine(cx - 1 + sway, baseY - 16, cx - 3 + sway, baseY - 13, outline);
+  ui.drawLine(cx - 3 + sway, baseY - 13, cx - 3 + sway, baseY - 10, outline);
+  ui.drawLine(cx - 3 + sway, baseY - 10, cx - 5 + sway, baseY - 9, outline);
+  ui.drawLine(cx - 5 + sway, baseY - 9, cx - 5 + sway, baseY - 5, outline);
+  ui.drawLine(cx - 5 + sway, baseY - 5, cx - 7, baseY - 4, outline);
+  ui.drawLine(cx - 7, baseY - 4, cx - 7, baseY - 1, outline);
+  ui.drawLine(cx - 7, baseY - 1, cx - 5, baseY, outline);
+  ui.drawFastHLine(cx - 5, baseY, 11, outline);
+  ui.drawLine(cx + 5, baseY, cx + 7, baseY - 1, outline);
+  ui.drawLine(cx + 7, baseY - 1, cx + 7, baseY - 4, outline);
+  ui.drawLine(cx + 7, baseY - 4, cx + 5 + sway, baseY - 5, outline);
+  ui.drawLine(cx + 5 + sway, baseY - 5, cx + 5 + sway, baseY - 9, outline);
+  ui.drawLine(cx + 5 + sway, baseY - 9, cx + 3 + sway, baseY - 10, outline);
+  ui.drawLine(cx + 3 + sway, baseY - 10, cx + 3 + sway, baseY - 13, outline);
+  ui.drawLine(cx + 3 + sway, baseY - 13, cx - 1 + sway, baseY - 16, outline);
 
   // Occasional manga/cartoon stink puff. Each pile is phase-shifted so three
   // poops do not puff in perfect sync.
@@ -105,4 +125,4 @@ if "    drawPoops();" not in text:
 text = text.replace("    drawPoops();", "    drawPoops(now);", 1)
 
 MAIN.write_text(text, encoding="utf-8", newline="\n")
-print("[v0.9.0-poop] Added modest-size faceless Tamagotchi-style poop swirl with subtle wobble and occasional stink puff")
+print("[v0.9.0-poop] Added modest-size faceless Tamagotchi-style poop swirl with closed near-black outline, subtle wobble and occasional stink puff")
