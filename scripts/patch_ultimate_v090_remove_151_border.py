@@ -46,15 +46,21 @@ if border_block not in text:
     fail("151 Master Border renderer missing")
 text = text.replace(border_block, "", 1)
 
-secret_branch = '''  } else if (ultimateSecretWordEnds("151")) {
+# The second-audit secret handler returns bool so a completed code consumes its
+# final key. Keep that behavior, but make 151 a retired/no-op code.
+secret_branch = '''  if (ultimateSecretWordEnds("151")) {
     ultimateUnlockSecret(ULT_SECRET_MASTER151, "151 MASTER BORDER", 3);
     ultimateSecretWordLen = 0; ultimateSecretWord[0] = 0;
-  } else if (ultimateSecretWordEnds("ultimate")) {'''
-secret_replacement = '''  } else if (ultimateSecretWordEnds("151")) {
+    return true;
+  }
+  if (ultimateSecretWordEnds("ultimate")) {'''
+secret_replacement = '''  if (ultimateSecretWordEnds("151")) {
     // Retired secret: consume the old code silently so it cannot unlock or
     // display anything in current builds.
     ultimateSecretWordLen = 0; ultimateSecretWord[0] = 0;
-  } else if (ultimateSecretWordEnds("ultimate")) {'''
+    return true;
+  }
+  if (ultimateSecretWordEnds("ultimate")) {'''
 if secret_branch not in text:
     fail("151 secret input branch missing")
 text = text.replace(secret_branch, secret_replacement, 1)
