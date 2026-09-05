@@ -1,19 +1,28 @@
-TamaPoke Cardputer ADV v0.8.5.4
-Stable OG TamaPoke firmware line; release source based on RC5
-Display timeout race fixed while preserving OFF/30s/1m/2m/5m choices
-G0 / BtnA toggles the backlight manually; Settings manual screen-off row removed
-Small top-right battery meter with low-battery indication and voltage fallback during normal UI screens
-Terrarium idle mode is clean: no IDLE label, no battery HUD and no SAVE overlay
-Classic pre-RC3 TamaPoke habitat/background renderer restored exactly for normal Home/idle scenes
-Original graphical FOOD / JOY / ENE / HYG status meters restored; raw numeric need boxes removed
-Visible save indicator, About/version screen, SD/sprite-pack status and upstream/port credits
-30-second terrarium idle mode with any-key return and normal configured screen timeout preserved
-Richer PMD personality behavior uses idle, walk, hop, nod, pose, sit, breath, hurt and attack actions when available
-Special Gastly/Haunter/Gengar spectral atmosphere preserved and enhanced shiny sparkle treatment
-Evolution presentation upgraded with silhouette swapping, accelerating flashes, sound and full-color evolved reveal
-Pokédex detail screen upgraded with animated preview, raised/current state, shiny badge, type/theme, habitat, rarity, base stats and evolution info
-Recent-events/history screen records evolution, level, medal, Pokédex, care-mistake, bond and record milestones
-Display-settings recovery resets display preferences without deleting the Pokemon save
-GitHub README uses a repository-hosted SVG banner
-Pet save format remains compatible with v0.7 /tamapoke_v7_a.bin and /tamapoke_v7_b.bin
-Stable merged firmware filename: TamaPoke-CardputerADV.bin
+TamaPoke Cardputer ADV v0.9.0
+Hardware status: APPROVED on physical M5Stack Cardputer ADV
+Public firmware filename: TamaPoke-CardputerADV-v0.9.0.bin
+
+Major v0.9.0 additions:
+- Persistent personality traits and live moods
+- Richer idle behavior and species/time/habitat reactions
+- Home customization with selectable Meadow, Beach, Forest, Volcano, Mountain, Snow, Starfield and Dream backgrounds
+- Inventory, Poke Shop and coin economy
+- Six additional minigames with persistent high scores
+- Daily Life rewards, greetings, care bonuses, visitors and anniversary tracking
+- Deeper Pokedex history and favorites
+- Three-slot Save Manager with integrity verification and staged restore
+- Event-only audio upgrade with cries, jingles and care/evolution sounds; no looping background music/ambience
+- Animation polish, shiny effects, evolution presentation and sleep effects
+- Clock / Calendar with 12-hour time, seconds, weekday, full date and original Gastly/Haunter/Gengar PMD sprites
+- Manual date/time editor and one-shot Wi-Fi/NTP time sync with saved-network support
+- Starfield and Dream are normal selectable backgrounds; the retired 151 border is not included
+- Mystery Gift / Mew Visitor / Ultra Shiny secret content remains optional
+
+Compatibility:
+- Pet save journal remains compatible with v0.7 /tamapoke_v7_a.bin and /tamapoke_v7_b.bin
+- Original time-based leveling remains intact: 1 real minute = 1 in-game minute, +1 level per real hour
+- Original evolution level/path requirements remain intact; care mistakes can delay evolution
+- Original sunrise/day/sunset/night thresholds remain intact
+- Existing v0.8.5.4 display, battery, event-history and clean terrarium behavior remains included
+
+Development history remains on branch ultimate-v0.9.0 until the release PR is explicitly merged.

@@ -5,8 +5,8 @@ import shutil
 
 APP_BIN = "$BUILD_DIR/${PROGNAME}.bin"
 PROJECT_DIR = env.subst("$PROJECT_DIR")
-MERGED_BIN = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV.bin")
-APP_COPY = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.8.5.4-firmware.bin")
+MERGED_BIN = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.9.0-full-flash.bin")
+APP_COPY = os.path.join(PROJECT_DIR, "TamaPoke-CardputerADV-v0.9.0.bin")
 
 
 def merge_bin(source, target, env):
@@ -27,15 +27,17 @@ def merge_bin(source, target, env):
         "-o", '\"%s\"' % MERGED_BIN,
     ] + flash_images)
 
-    print("Creating single merged flash image...")
+    print("Creating optional v0.9.0 full-flash image...")
     result = env.Execute(cmd)
     if result != 0:
-        print("WARNING: merged BIN creation failed; normal firmware.bin still exists.")
+        print("WARNING: full-flash BIN creation failed; normal firmware.bin still exists.")
     else:
-        print("MERGED BIN: %s" % MERGED_BIN)
+        print("FULL-FLASH BIN: %s" % MERGED_BIN)
 
+    # Public/release firmware: this is the normal application BIN used by
+    # M5 Launcher and normal app-partition flashing workflows.
     shutil.copyfile(env.subst(APP_BIN), APP_COPY)
-    print("APP BIN: %s" % APP_COPY)
+    print("RELEASE APP BIN: %s" % APP_COPY)
 
 
 env.AddPostAction(APP_BIN, merge_bin)
