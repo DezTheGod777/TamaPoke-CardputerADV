@@ -4,21 +4,33 @@
 
 **TamaPoke Cardputer ADV** is an unofficial M5Stack Cardputer ADV port and expansion of [socquique/TamaPoke](https://github.com/socquique/TamaPoke). It keeps the original virtual-pet lifecycle, Gen-1 Pokédex, time-based leveling and v0.7-compatible pet journal while adding a large Cardputer-focused feature set: personality and moods, customizable homes, inventory/shop/economy, more minigames, Daily Life, deeper history, save backups, expanded audio/animation, a live Clock/Calendar, one-shot Wi-Fi time sync and more.
 
-> **Current release target: v0.9.0 — hardware-approved on a physical M5Stack Cardputer ADV.**
+> **Current stable release: v0.9.0 — hardware-tested and approved on a physical M5Stack Cardputer ADV.**
 
 ## Download
 
-For the public v0.9.0 release, use the normal firmware file:
+### New user? Use this file
 
-**`TamaPoke-CardputerADV-v0.9.0.bin`**
+**[Download `TamaPoke-CardputerADV-v0.9.0.bin`](https://github.com/DezTheGod777/TamaPoke-CardputerADV/releases/download/v0.9.0/TamaPoke-CardputerADV-v0.9.0.bin)**
 
-The release attachment is the normal application firmware BIN and is suitable for M5 Launcher. Do not use the optional `full-flash` image unless you specifically know you need a complete flash image.
+That is the normal application firmware BIN and the file intended for ordinary installation with **M5 Launcher**. Do **not** choose the optional `full-flash` image unless you specifically know you need a complete flash image.
 
-Before updating, back up the files on your microSD card—especially `/tamapoke_v7_a.bin` and `/tamapoke_v7_b.bin`.
+Before updating an existing TamaPoke installation, back up the files on your microSD card—especially `/tamapoke_v7_a.bin` and `/tamapoke_v7_b.bin`.
+
+## Beginner quick start
+
+If this is your first time using TamaPoke Cardputer ADV:
+
+1. Download **`TamaPoke-CardputerADV-v0.9.0.bin`** from the v0.9.0 GitHub release.
+2. Install that BIN with **M5 Launcher** on an **M5Stack Cardputer ADV**.
+3. Prepare a FAT32 microSD card with the compatible TamaPoke/PMD `mons` sprite folder if you want the full animated Pokémon graphics.
+4. Start TamaPoke, press **Down** for Settings, then set the date/time manually or use **Wi-Fi Time Sync**.
+5. Press **H** from Home to open the **TamaPoke Hub** and explore the major v0.9.0 features.
+
+Nothing in the normal setup requires entering a flash offset, editing source code or keeping Wi-Fi connected. For screenshots, file layout, first-boot checks and troubleshooting, follow the [Installation Guide](docs/INSTALLATION.md).
 
 ## Documentation
 
-The v0.9.0 fork has grown far beyond the original Cardputer port, so the repository now includes a full manual:
+The v0.9.0 fork has grown far beyond the original Cardputer port, so the repository includes a full manual:
 
 - **[Installation](docs/INSTALLATION.md)** — firmware installation, microSD setup, sprite files and first boot.
 - **[Controls](docs/CONTROLS.md)** — complete keyboard/shortcut reference.
@@ -185,4 +197,4 @@ This is an unofficial fan project and is not affiliated with Nintendo, Game Frea
 
 ## Release status
 
-v0.9.0 has completed physical hardware testing and is approved for release preparation. The development history remains on `ultimate-v0.9.0` until the release PR is explicitly merged into `main`.
+**v0.9.0 is the current stable public release.** It was tested on physical M5Stack Cardputer ADV hardware before publication. The `ultimate-v0.9.0` branch is retained only as development history; stable users should use `main`, the `v0.9.0` release tag and the release BIN.
